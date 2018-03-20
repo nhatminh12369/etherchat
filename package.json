@@ -1,0 +1,21 @@
+{
+  "name": "ethermessage",
+  "version": "1.0.0",
+  "description": "Decentralized messaging on Ethereum network",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Minh Nguyen",
+  "license": "MIT",
+  "dependencies": {
+    "fs-extra": "^5.0.0",
+    "ganache-cli": "^6.1.0",
+    "mocha": "^5.0.4",
+    "next": "^4.1.4",
+    "react": "^16.2.0",
+    "react-dom": "^16.2.0",
+    "solc": "^0.4.21",
+    "web3": "^1.0.0-beta.26"
+  }
+}
