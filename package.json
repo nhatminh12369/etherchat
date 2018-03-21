@@ -4,11 +4,15 @@
   "description": "Decentralized messaging on Ethereum network",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "mocha",
+    "dev": "next dev"
   },
   "author": "Minh Nguyen",
   "license": "MIT",
   "dependencies": {
+    "bip39": "^2.5.0",
+    "ethereumjs-util": "^5.1.5",
+    "ethereumjs-wallet": "^0.6.0",
     "fs-extra": "^5.0.0",
     "ganache-cli": "^6.1.0",
     "mocha": "^5.0.4",
