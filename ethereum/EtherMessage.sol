@@ -1,8 +1,8 @@
 pragma solidity ^0.4.20;
 
 contract EtherMessage {
-    event messageSent(address from, address to, string message, bytes32 encryption);
-    event addContactRequest(address from, address to);
+    event messageSentEvent(address from, address to, bytes message, bytes32 encryption);
+    event addContactEvent(address from, address to);
     
     enum RelationshipType {NoRelation, Requested, Connected, Blocked}
     
@@ -28,10 +28,10 @@ contract EtherMessage {
         require(relationships[msg.sender][addr] == RelationshipType.NoRelation);
         
         relationships[msg.sender][addr] = RelationshipType.Requested;
-        emit addContactRequest(msg.sender, addr);
+        emit addContactEvent(msg.sender, addr);
     }
 
-    function confirmContactRequest(address addr) public onlyMember {
+    function acceptContactRequest(address addr) public onlyMember {
         require(relationships[addr][msg.sender] == RelationshipType.Requested);
         
         relationships[msg.sender][addr] = RelationshipType.Connected;
@@ -47,12 +47,12 @@ contract EtherMessage {
         members[msg.sender] = newMember;
     }
     
-    function sendMessage(address to, string message, bytes32 encryption) public onlyMember {
+    function sendMessage(address to, bytes message, bytes32 encryption) public onlyMember {
         RelationshipType relation = relationships[msg.sender][to];
         require(relation != RelationshipType.NoRelation);
         require(relation != RelationshipType.Blocked);
         
-        emit messageSent(msg.sender, to, message, encryption);
+        emit messageSentEvent(msg.sender, to, message, encryption);
     }
     
     function blockMessagesFrom(address a) public onlyMember {
