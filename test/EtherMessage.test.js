@@ -10,7 +10,6 @@ const compiledEtherMessage = require('../ethereum/build/EtherMessage.json');
 
 let accounts;
 let contract;
-let contractAddress;
 
 beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
@@ -231,6 +230,13 @@ describe('Sending message', () => {
         var secret1 = utils.computeSecret(testAccounts[1].secretKey, Buffer.from(pubkeyUser0, 'hex'));
 
         var messages = ['Đây là một tin utf8', 'hello account 1', 'testing', 'how about a very long message how about a very long message how about a very long message how about a very long message how about a very long message how about a very long message how about a very long message how about a very long message how about a very long message how about a very long message how about a very long message'];
+
+        await contract.methods.sendMessage(accounts[0], 
+            '0x' + utils.encrypt(messages[0], secret1).toString('hex'), 
+            stringToHex('aes256')).send({
+            from: accounts[1],
+            gas: '3000000'
+        });
         
         for (var i=0;i<messages.length;i++) {
             await contract.methods.sendMessage(accounts[1], 
@@ -247,14 +253,15 @@ describe('Sending message', () => {
         assert(member1.messageStartBlock > 0);
 
         var messageEvents = await contract.getPastEvents('messageSentEvent',{
-            filter: {},
-            fromBlock: member1.messageStartBlock
+            filter: {from: accounts[0]},
+            fromBlock: 0
         });
 
         for (var i=0;i<messages.length;i++) {
             var returnedMessage = messageEvents[i].returnValues.message;
             var decryptedMessage = utils.decrypt(Buffer.from(returnedMessage.substr(2), 'hex'), secret1);
-            assert(messages[i], decryptedMessage.toString('ascii'));
+            console.log('Message ' + i + ': ' + messages[i] + ' ::COMPARED TO:: ' + decryptedMessage.toString('ascii'));
+            assert.equal(messages[i], decryptedMessage.toString('ascii'));
         }
     });
 });

@@ -59,4 +59,4 @@ typings/
 
 package-lock.json
 ethereum/build/EtherMessage.json
-ethereum/build/EtherMessage.json
+.next/

@@ -1,8 +1,8 @@
 pragma solidity ^0.4.20;
 
 contract EtherMessage {
-    event messageSentEvent(address from, address to, bytes message, bytes32 encryption);
-    event addContactEvent(address from, address to);
+    event messageSentEvent(address indexed from, address indexed to, bytes message, bytes32 encryption);
+    event addContactEvent(address indexed from, address indexed to);
     
     enum RelationshipType {NoRelation, Requested, Connected, Blocked}
     
