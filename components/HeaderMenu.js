@@ -18,7 +18,11 @@ class HeaderMenu extends Component {
     }
 
     clearPrivateKey = () => {
-        window.localStorage.removeItem("privateKey");
+        window.localStorage.clear();
+    }
+
+    joinContract = () => {
+        this.account.joinContract();
     }
 
     componentDidMount() {
@@ -90,7 +94,7 @@ class HeaderMenu extends Component {
                 <Menu.Menu position='right'>
                     {accountInfo}
                     <Menu.Item>
-                        <Button primary>Join zzz</Button>
+                        <Button primary onClick={this.joinContract}>Join zzz</Button>
                         <Button onClick={this.clearPrivateKey} primary>Clear</Button>
                     </Menu.Item>
                 </Menu.Menu>

@@ -257,10 +257,14 @@ describe('Sending message', () => {
             fromBlock: 0
         });
 
+        var contactEvent = await contract.getPastEvents('addContactEvent',{
+            filter: {},
+            fromBlock: 0
+        });
+        
         for (var i=0;i<messages.length;i++) {
             var returnedMessage = messageEvents[i].returnValues.message;
             var decryptedMessage = utils.decrypt(Buffer.from(returnedMessage.substr(2), 'hex'), secret1);
-            console.log('Message ' + i + ': ' + messages[i] + ' ::COMPARED TO:: ' + decryptedMessage.toString('ascii'));
             assert.equal(messages[i], decryptedMessage.toString('ascii'));
         }
     });

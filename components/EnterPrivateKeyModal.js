@@ -33,6 +33,7 @@ class EnterPrivateKeyModal extends Component {
         if (success) {
             this.setState({ modalOpen: false })
             window.localStorage.setItem("privateKey", this.state.key);
+            window.localStorage.setItem("currentDataBlock", "0");
         } else {
             this.setState({errorMessage: "Invalid private key"});
         }

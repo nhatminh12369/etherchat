@@ -55,7 +55,7 @@ class AddContactModal extends Component {
             );
         } else {
             content = (
-                <Dimmer.Dimmable as={Modal.Content} active>
+                <Dimmer.Dimmable as={Modal.Content} dimmed={true}>
                     <Dimmer active inverted >
                         <Loader active />
                     </Dimmer>
