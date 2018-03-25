@@ -3,6 +3,7 @@ pragma solidity ^0.4.20;
 contract EtherMessage {
     event messageSentEvent(address indexed from, address indexed to, bytes message, bytes32 encryption);
     event addContactEvent(address indexed from, address indexed to);
+    event acceptContactEvent(address indexed from, address indexed to);
     
     enum RelationshipType {NoRelation, Requested, Connected, Blocked}
     
@@ -38,12 +39,14 @@ contract EtherMessage {
         relationships[addr][msg.sender] = RelationshipType.Connected;
         contactLists[msg.sender].push(addr);
         contactLists[addr].push(msg.sender);
+
+        emit acceptContactEvent(msg.sender, addr);
     }
     
     function join(bytes32 publicKeyLeft, bytes32 publicKeyRight) public {
         require(members[msg.sender].isMember == false);
         
-        Member memory newMember = Member(publicKeyLeft, publicKeyRight, '', '', 0, true);
+        Member memory newMember = Member(publicKeyLeft, publicKeyRight, "", "", 0, true);
         members[msg.sender] = newMember;
     }
     
@@ -89,23 +92,24 @@ contract EtherMessage {
     function getContactList() public view onlyMember
         returns (address[] addresses, bytes32[] names, bytes32[] avatarUrls, 
         bytes32[] pubkeyLefts, bytes32[] pubkeyRights, uint[] msgStartBlocks) {
-            addresses = contactLists[msg.sender];
-            uint count = addresses.length;
+        
+        addresses = contactLists[msg.sender];
+        uint count = addresses.length;
 
-            names = new bytes32[](count);
-            avatarUrls = new bytes32[](count);
-            pubkeyLefts = new bytes32[](count);
-            pubkeyRights = new bytes32[](count);
-            msgStartBlocks = new uint[](count);
+        names = new bytes32[](count);
+        avatarUrls = new bytes32[](count);
+        pubkeyLefts = new bytes32[](count);
+        pubkeyRights = new bytes32[](count);
+        msgStartBlocks = new uint[](count);
 
-            for (uint i=0;i<count;i++) {
-                Member storage member = members[addresses[i]];
-                names[i] = member.name;
-                avatarUrls[i] = member.avatarUrl;
-                pubkeyLefts[i] = member.publicKeyLeft;
-                pubkeyRights[i] = member.publicKeyRight;
-                msgStartBlocks[i] = member.messageStartBlock;
-            }
+        for (uint i = 0; i<count; i++) {
+            Member storage member = members[addresses[i]];
+            names[i] = member.name;
+            avatarUrls[i] = member.avatarUrl;
+            pubkeyLefts[i] = member.publicKeyLeft;
+            pubkeyRights[i] = member.publicKeyRight;
+            msgStartBlocks[i] = member.messageStartBlock;
+        }
     }
     
     function getRelationWith(address a) public view onlyMember returns (RelationshipType) {
