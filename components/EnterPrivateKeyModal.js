@@ -41,7 +41,6 @@ class EnterPrivateKeyModal extends Component {
     };
 
     componentWillMount() {
-        console.log('PrivateKeyModal componentWillMount');
         // this.checkForPrivateKey();
 
         appDispatcher.register((payload) => {
@@ -52,7 +51,6 @@ class EnterPrivateKeyModal extends Component {
     }
 
     render() {
-        console.log('PrivateKeyModal render');
         return (
             <Modal
                 open={this.state.modalOpen}

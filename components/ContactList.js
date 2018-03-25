@@ -19,12 +19,17 @@ class ContactList extends Component {
     constructor(props) {
         console.log(props);
         super(props);
-        this.state = {contacts: undefined};
+        this.state = {contactAddresses: undefined};
         this.account = props.account;
     }
 
     componentDidMount() {
         this.getData();
+        appDispatcher.register((payload) => {
+            if (payload.action == Constant.EVENT.CONTACT_LIST_UPDATED) {
+                this.setState({contactAddresses: this.account.storageManager.contactAddresses});
+            }
+        })
     }
 
     getData = async () => {
@@ -42,19 +47,19 @@ class ContactList extends Component {
     }
 
     render() {
-        const { contacts } = this.state;
+        const { contactAddresses } = this.state;
         const {height} = this.props;
         var htmlContent;
 
         var contactItems = [];
 
-        if (contacts == undefined) {
+        if (contactAddresses == undefined) {
             htmlContent = (
                 <Dimmer active>
                    <Loader size='large'>Loading</Loader>
                 </Dimmer>
             )
-        } else if (contacts.length == 0) {
+        } else if (contactAddresses.length == 0) {
             contactItems.push(
                 <List.Item key={'contact_' + i}>
                     <List.Content>
@@ -64,12 +69,13 @@ class ContactList extends Component {
                 );
             htmlContent = (<List selection animated verticalAlign='middle'>{contactItems}</List>);
         } else {
-            for (var i=0;i<contacts.length;i++) {
+            for (var i=0;i<contactAddresses.length;i++) {
                 contactItems.push(
                     <List.Item key={'contact_' + i}>
                         <Image avatar src='/assets/images/avatar/small/helen.jpg' />
                         <List.Content>
-                            <List.Header>Helen</List.Header>
+                            <List.Header></List.Header>
+                            {contactAddresses[i].substr(0, 10)+'...'}
                         </List.Content>
                     </List.Item>
                 );
