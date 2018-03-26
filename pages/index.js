@@ -55,7 +55,6 @@ class Index extends Component {
                 if (privateKey == undefined) {
                     //this.setState({modalOpen: true});
                 } else {
-                    console.log('Private key: ' + privateKey);
                     this.account.setPrivateKey(privateKey);
                 }
             }

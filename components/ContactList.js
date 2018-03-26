@@ -19,9 +19,8 @@ var {Relationship} = require('../lib/Relationship');
 
 class ContactList extends Component {
     constructor(props) {
-        console.log(props);
         super(props);
-        this.state = {contactAddresses: undefined, isAccepting: []};
+        this.state = {contactAddresses: undefined, isAccepting: [], selectedAddress: ""};
         this.account = props.account;
     }
 
@@ -57,11 +56,11 @@ class ContactList extends Component {
 
     listItemClicked = (address, event) => {
         if (this.account.storageManager.contacts[address].relationship == Relationship.Connected) {
-            console.log('Dispatch event');
             appDispatcher.dispatch({
                 action: Constant.ACTION.SELECT_CONTACT,
                 data: address
             });
+            this.setState({selectedAddress: address});
         }
     }
 
@@ -102,7 +101,7 @@ class ContactList extends Component {
 
                 var address = contactAddresses[i];
                 contactItems.push(
-                    <List.Item key={'contact_' + i} value={address} onClick={this.listItemClicked.bind(this,address)}>
+                    <List.Item active={address == this.state.selectedAddress} key={'contact_' + i} value={address} onClick={this.listItemClicked.bind(this,address)}>
                         <Image avatar src={user.avatarUrl ? user.avatarUrl : 'static/images/user.png'}/>
                         <List.Content>
                             <List.Header>{user.name ? user.name : address.substr(0, 10)}</List.Header>
@@ -112,7 +111,7 @@ class ContactList extends Component {
                     </List.Item>
                 );
             }
-            htmlContent = (<List selection animated verticalAlign='middle'>{contactItems}</List>);
+            htmlContent = (<List selection verticalAlign='middle'>{contactItems}</List>);
         }
         
         return (

@@ -4,7 +4,9 @@ import {
     Input,
     Button,
     Message,
-    Icon
+    Icon,
+    Header,
+    Label
 } from 'semantic-ui-react';
 import appDispatcher from '../components/AppDispatcher';
 import Constant from '../components/Constant';
@@ -58,44 +60,51 @@ class Chat extends Component {
 
         var messageItems = [];
         if (publicKey) {
-            for (var i=0;i<messages.length;i++) {
-                var decryptedMessage;
-                if (messages[i].encryption == 'aes256') {
-                    decryptedMessage = utils.decrypt(messages[i].message.substr(2), 
-                        this.account.computeSecret(Buffer.from(publicKey, 'hex')));
-                } else {
-                    decryptedMessage = messages[i].message;
-                }
-                var lastObjectAnchor = (<div />);
-                if (i == messages.length - 1) {
-                    lastObjectAnchor = (<div ref={lastObjectAnchor => { this.lastObjectAnchor = lastObjectAnchor; }} />);
-                }
+            if (messages.length > 0) {
+                for (var i=0;i<messages.length;i++) {
+                    var decryptedMessage;
+                    if (messages[i].encryption == 'aes256') {
+                        decryptedMessage = utils.decrypt(messages[i].message.substr(2), 
+                            this.account.computeSecret(Buffer.from(publicKey, 'hex')));
+                    } else {
+                        decryptedMessage = messages[i].message;
+                    }
+                    
+                    var lastObjectAnchor = (<span />);
+                    if (i == messages.length - 1) {
+                        lastObjectAnchor = (<span ref={lastObjectAnchor => { this.lastObjectAnchor = lastObjectAnchor; }} />);
+                    }
 
-                if (messages[i].isMine) {
-                    if (messages[i].isPending == true) {
-                        messageItems.push(
-                            <Message negative key={'msg_' + i}>
-                                <Icon name='circle notched' loading />
-                                {decryptedMessage}
-                                {lastObjectAnchor}
-                            </Message>
-                        );
+                    if (messages[i].isMine) {
+                        if (messages[i].isPending == true) {
+                            messageItems.push(
+                                <p align='right' key={'msg_' + i}><Label pointing='right' as='span' size='large' color='blue'>
+                                    <Icon name='circle notched' loading />
+                                    {decryptedMessage}
+                                    {lastObjectAnchor}
+                                </Label></p>
+                            );
+                        } else {
+                            messageItems.push(
+                                <p align='right' key={'msg_' + i}><Label pointing='right' as='span' key={'msg_' + i} size='large' color='blue'>
+                                    {decryptedMessage}
+                                    {lastObjectAnchor}
+                                </Label></p>
+                            );
+                        }
                     } else {
                         messageItems.push(
-                            <Message negative key={'msg_' + i}>
+                            <p key={'msg_' + i}><Label pointing='left' as='span' key={'msg_' + i} size='large'>
                                 {decryptedMessage}
                                 {lastObjectAnchor}
-                            </Message>
+                            </Label></p>
                         );
                     }
-                } else {
-                    messageItems.push(
-                        <Message info key={'msg_' + i}>
-                        {decryptedMessage}
-                        {lastObjectAnchor}
-                        </Message>
-                    );
                 }
+            } else {
+                messageItems.push(
+                    <Header as='h2' textAlign='center' key='no_messages'>No messages</Header>
+                )
             }
         }
 
@@ -105,11 +114,10 @@ class Chat extends Component {
                     {messageItems}
                 </Segment>
                 <Segment>
-                    <Input style={{width: '70%'}} 
+                    <Input fluid disabled={this.state.address ? false : true}
                         value={this.state.composedMessage} 
                         onChange={(e) => this.setState({composedMessage: e.target.value})} 
                         action={{ color: 'teal', labelPosition: 'right', icon: 'send', content: 'Send', onClick: (e)=>this.sendMessage()}}/>
-                    <Button>Test</Button>
                 </Segment>
             </div>
         );

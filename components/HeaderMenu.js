@@ -41,36 +41,6 @@ class HeaderMenu extends Component {
     
 
     render() {
-        // var account = this.account;
-        // console.log(account);
-
-        // var content;
-        // if (this.account.isValid == false) {
-        //     content = (
-        //         <Button primary>Create account</Button>
-        //     );
-        // } else if (this.account.isJoined == false) {
-        //     content = (
-        //         <Menu.Item position='right'>
-        //             {this.account.getAddress()}<br />
-        //             { parseFloat(web3.utils.fromWei(this.account.balance, 'ether')).toFixed(6) }
-        //         </Menu.Item>
-        //         <Menu.Item position='right'>
-        //             <Button primary>Join zzz</Button>
-        //             <Button onClick={this.clearPrivateKey} primary>Clear</Button>
-        //         </Menu.Item>
-        //     );
-        // } else {
-        //     content = (
-        //         <div>
-        //         {this.account.getAddress()}<br />
-        //         {this.account.getBalance()}
-        //         <Button onClick={this.clearPrivateKey} primary>Clear</Button>
-        //         </div>
-        //     );
-        // }
-        // return content;
-
         var accountInfo = (<Loader active />);
         if (this.state.address != "") {
             accountInfo = (
