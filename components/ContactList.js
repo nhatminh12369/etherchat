@@ -9,17 +9,19 @@ import {
     Grid,
     Button,
     Icon,
-    Segment
+    Segment,
+    Label
 } from 'semantic-ui-react';
 import appDispatcher from './AppDispatcher';
 import Constant from './Constant';
 import AddContactModal from './AddContactModal';
+var {Relationship} = require('../lib/Relationship');
 
 class ContactList extends Component {
     constructor(props) {
         console.log(props);
         super(props);
-        this.state = {contactAddresses: undefined};
+        this.state = {contactAddresses: undefined, isAccepting: []};
         this.account = props.account;
     }
 
@@ -46,6 +48,23 @@ class ContactList extends Component {
         });
     }
 
+    acceptContactRequest = (event) => {
+        var address = event.target.value;
+        this.account.storageManager.contacts[address].isAccepting = true;
+        this.account.acceptContactRequest(address);
+        this.forceUpdate();
+    }
+
+    listItemClicked = (event) => {
+        var address = event.target.value;
+        if (this.account.storageManager.contacts[address].relationship == 2) {
+            appDispatcher.dispatch({
+                action: Constant.ACTION.SELECT_CONTACT,
+                address: address
+            });
+        }
+    }
+
     render() {
         const { contactAddresses } = this.state;
         const {height} = this.props;
@@ -70,13 +89,32 @@ class ContactList extends Component {
             htmlContent = (<List selection animated verticalAlign='middle'>{contactItems}</List>);
         } else {
             for (var i=0;i<contactAddresses.length;i++) {
+                var user = this.account.storageManager.contacts[contactAddresses[i]];
+
+                console.log('Bug start here');
+                console.log(window.localStorage);
+                console.log(user);
+                console.log(this.account.storageManager.contactAddresses);
+                console.log(this.account.storageManager.contacts);
+                
+                var relationshipContent = (<div></div>);
+                if (user.relationship == Relationship.NoRelation) {
+                    relationshipContent = (
+                        <Button primary floated='right' loading={user.isAccepting} disabled={user.isAccepting} 
+                            onClick={this.acceptContactRequest} value={contactAddresses[i]}>Accept</Button>
+                    );
+                } else if (user.relationship == Relationship.Requested) {
+                    relationshipContent = (<List.Content floated='right'><Label color='orange' floated='right'>Pending</Label></List.Content>);
+                }
+
                 contactItems.push(
-                    <List.Item key={'contact_' + i}>
-                        <Image avatar src='/assets/images/avatar/small/helen.jpg' />
+                    <List.Item key={'contact_' + i} onClick={this.listItemClicked} value={contactAddresses[i]}>
+                        <Image avatar src={user.avatarUrl ? user.avatarUrl : 'static/images/user.png'}/>
                         <List.Content>
-                            <List.Header></List.Header>
+                            <List.Header>{user.name ? user.name : contactAddresses[i].substr(0, 10)}</List.Header>
                             {contactAddresses[i].substr(0, 10)+'...'}
                         </List.Content>
+                        {relationshipContent}
                     </List.Item>
                 );
             }

@@ -1,5 +1,6 @@
 module.exports.ACTION = {
-    ADD_CONTACT: 'ADD_CONTACT_ACTION'
+    ADD_CONTACT: 'ADD_CONTACT_ACTION',
+    SELECT_CONTACT: 'SELECT_CONTACT_ACTION'
 }
 
 module.exports.EVENT = {
