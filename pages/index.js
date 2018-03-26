@@ -18,6 +18,7 @@ import GuideModal from '../components/GuideModal';
 import Head from 'next/head';
 import Account from '../lib/Account';
 import ContactList from '../components/ContactList';
+import Chat from '../components/Chat';
 
 class Index extends Component {
     constructor(props) {
@@ -28,6 +29,7 @@ class Index extends Component {
     }
 
     componentDidMount() {
+        console.log(window.localStorage);
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
         this.checkForPrivateKey();
@@ -61,16 +63,7 @@ class Index extends Component {
     }
 
     render() {
-        var messageItems = [];
         var account = this.account;
-
-        for (var i=0;i<30;i++) {
-            messageItems.push(
-                <Message info key={'msg_' + i}>
-                <p>test message</p>
-                </Message>
-            );
-        }
 
         var listHeight = this.state.height - 100;
         return (
@@ -84,13 +77,7 @@ class Index extends Component {
                         <ContactList height={listHeight} account={account}/>
                     </Grid.Column>
                     <Grid.Column width={10} style={{height: listHeight + "px", overflow: 'auto', float: 'left'}}>
-                        <Segment style={{height: (listHeight-40) + "px", overflow: 'auto', float: 'left'}}>
-                            {messageItems}
-                        </Segment>
-                        <Segment inline="true">
-                            <Input style={{width: '70%'}} action={{ color: 'teal', labelPosition: 'right', icon: 'send', content: 'Send' }}/>
-                            <Button>Test</Button>
-                        </Segment>
+                        <Chat height={listHeight} account={account}/>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

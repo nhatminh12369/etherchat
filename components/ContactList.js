@@ -55,12 +55,12 @@ class ContactList extends Component {
         this.forceUpdate();
     }
 
-    listItemClicked = (event) => {
-        var address = event.target.value;
-        if (this.account.storageManager.contacts[address].relationship == 2) {
+    listItemClicked = (address, event) => {
+        if (this.account.storageManager.contacts[address].relationship == Relationship.Connected) {
+            console.log('Dispatch event');
             appDispatcher.dispatch({
                 action: Constant.ACTION.SELECT_CONTACT,
-                address: address
+                data: address
             });
         }
     }
@@ -89,14 +89,7 @@ class ContactList extends Component {
             htmlContent = (<List selection animated verticalAlign='middle'>{contactItems}</List>);
         } else {
             for (var i=0;i<contactAddresses.length;i++) {
-                var user = this.account.storageManager.contacts[contactAddresses[i]];
-
-                console.log('Bug start here');
-                console.log(window.localStorage);
-                console.log(user);
-                console.log(this.account.storageManager.contactAddresses);
-                console.log(this.account.storageManager.contacts);
-                
+                var user = this.account.storageManager.contacts[contactAddresses[i]];                
                 var relationshipContent = (<div></div>);
                 if (user.relationship == Relationship.NoRelation) {
                     relationshipContent = (
@@ -107,12 +100,13 @@ class ContactList extends Component {
                     relationshipContent = (<List.Content floated='right'><Label color='orange' floated='right'>Pending</Label></List.Content>);
                 }
 
+                var address = contactAddresses[i];
                 contactItems.push(
-                    <List.Item key={'contact_' + i} onClick={this.listItemClicked} value={contactAddresses[i]}>
+                    <List.Item key={'contact_' + i} value={address} onClick={this.listItemClicked.bind(this,address)}>
                         <Image avatar src={user.avatarUrl ? user.avatarUrl : 'static/images/user.png'}/>
                         <List.Content>
-                            <List.Header>{user.name ? user.name : contactAddresses[i].substr(0, 10)}</List.Header>
-                            {contactAddresses[i].substr(0, 10)+'...'}
+                            <List.Header>{user.name ? user.name : address.substr(0, 10)}</List.Header>
+                            {address.substr(0, 10)+'...'}
                         </List.Content>
                         {relationshipContent}
                     </List.Item>
