@@ -5,7 +5,10 @@ import {
     Button,
     Label,
     Loader,
-    List
+    List,
+    Image,
+    Icon,
+    Dropdown
 } from 'semantic-ui-react';
 import Head from 'next/head';
 import web3 from '../ethereum/web3';
@@ -17,7 +20,7 @@ class HeaderMenu extends Component {
         this.state = {address: "", balance: "", network: 4};
     }
 
-    clearPrivateKey = () => {
+    clearAllData = () => {
         window.localStorage.clear();
     }
 
@@ -38,36 +41,61 @@ class HeaderMenu extends Component {
         }
     }
 
-    
+    handleDropdownClicked = (event, data) => {
+        if (data.name == 'changeNameItem') {
+
+        } else if (data.name == 'changeAvatarItem') {
+
+        } else if (data.name == 'logOutItem') {
+            this.clearAllData();
+        }
+    }
 
     render() {
         var accountInfo = (<Loader active />);
+        var dropdownTrigger = (
+            <span><Icon name='user' size='large'/>{this.state.address.substr(0,10)}</span>
+        );
         if (this.state.address != "") {
             accountInfo = (
-                <Menu.Item>
-                    <List>
-                    <List.Item>{this.state.address.substr(0,14) + '...'}</List.Item>
-                    <List.Item><Label color='green'>{this.state.balance + ' ETH' }</Label></List.Item>
-                    </List>
-                </Menu.Item>
+                <Menu.Menu position='right'>
+                    <Menu.Item>
+                        <List>
+                        <List.Item>{this.state.address}</List.Item>
+                        <List.Item>
+                            Balance: <Label color='orange'>{this.state.balance + ' ETH' }</Label>
+                            {/* <Button onClick={this.clearPrivateKey} color='red' style={{fontSize: '0.9em', float: 'right'}}>Logout</Button> */}
+                        </List.Item>
+                        </List>
+                    </Menu.Item>
+                    <Menu.Item>
+                        <Dropdown item trigger={dropdownTrigger}>
+                            <Dropdown.Menu>
+                                <Dropdown.Item name='changeNameItem' onClick={this.handleDropdownClicked}>
+                                    <Icon name='write'/>Change name
+                                </Dropdown.Item>
+                                <Dropdown.Item name='changeAvatarItem' onClick={this.handleDropdownClicked}>
+                                    <Icon name='write'/>Change avatar
+                                </Dropdown.Item>
+                                <Dropdown.Item name='logOutItem' onClick={this.handleDropdownClicked}>
+                                    <Icon name='log out'/>Log out
+                                </Dropdown.Item>
+                            </Dropdown.Menu>
+                        </Dropdown>
+                    </Menu.Item>
+                </Menu.Menu>
             );
         }
 
         return (
-            <Menu fixed='top'>
+            <Menu fixed='top' color='teal' inverted>
                 <Head>
                 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"></link>
                 </Head>
                 <Container>
                 <Menu.Item>Project name</Menu.Item>
                 <Menu.Item>About zzz</Menu.Item>
-                <Menu.Menu position='right'>
                     {accountInfo}
-                    <Menu.Item>
-                        <Button primary onClick={this.joinContract}>Join zzz</Button>
-                        <Button onClick={this.clearPrivateKey} primary>Clear</Button>
-                    </Menu.Item>
-                </Menu.Menu>
                 </Container>
             </Menu>
         );

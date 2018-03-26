@@ -10,7 +10,8 @@ import {
     Button,
     Icon,
     Segment,
-    Label
+    Label,
+    Header
 } from 'semantic-ui-react';
 import appDispatcher from './AppDispatcher';
 import Constant from './Constant';
@@ -117,8 +118,8 @@ class ContactList extends Component {
         return (
             <div style={{width: '100%'}}>
                 <div style={{height: 40, width: '100%'}}>
-                <h2 style={{float: 'left'}}>Contact list</h2>
-                <Button color='teal' style={{float: 'right'}} onClick={this.addContactClicked}><Icon name='add user'></Icon>Add</Button>
+                <Header as='h2' style={{float: 'left'}}>Contact list</Header>
+                <Button color='orange' style={{float: 'right'}} onClick={this.addContactClicked}><Icon name='add user'></Icon>Add</Button>
                 </div>
                 <Dimmer.Dimmable as='div' style={{height: height - 40, overflow: 'auto', float: 'left', width:'100%'}}>
                     {htmlContent}
