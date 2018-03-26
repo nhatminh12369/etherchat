@@ -69,7 +69,7 @@ class Chat extends Component {
                     } else {
                         decryptedMessage = messages[i].message;
                     }
-                    
+
                     var lastObjectAnchor = (<span />);
                     if (i == messages.length - 1) {
                         lastObjectAnchor = (<span ref={lastObjectAnchor => { this.lastObjectAnchor = lastObjectAnchor; }} />);
@@ -78,7 +78,8 @@ class Chat extends Component {
                     if (messages[i].isMine) {
                         if (messages[i].isPending == true) {
                             messageItems.push(
-                                <p align='right' key={'msg_' + i}><Label pointing='right' as='span' size='large' color='blue'>
+                                <p align='right' key={'msg_' + i}><Label pointing='right' 
+                                    as='span' size='large' color='blue' style={{fontWeight: '100', lineHeight: '1.5'}}>
                                     <Icon name='circle notched' loading />
                                     {decryptedMessage}
                                     {lastObjectAnchor}
@@ -86,7 +87,9 @@ class Chat extends Component {
                             );
                         } else {
                             messageItems.push(
-                                <p align='right' key={'msg_' + i}><Label pointing='right' as='span' key={'msg_' + i} size='large' color='blue'>
+                                <p align='right' key={'msg_' + i}><Label pointing='right' 
+                                    as='span' key={'msg_' + i} size='large' color='blue' 
+                                    style={{fontWeight: '100', lineHeight: '1.5'}}>
                                     {decryptedMessage}
                                     {lastObjectAnchor}
                                 </Label></p>
@@ -94,7 +97,8 @@ class Chat extends Component {
                         }
                     } else {
                         messageItems.push(
-                            <p key={'msg_' + i}><Label pointing='left' as='span' key={'msg_' + i} size='large'>
+                            <p key={'msg_' + i}><Label pointing='left' as='span' 
+                                key={'msg_' + i} size='large' style={{fontWeight: '100', lineHeight: '1.5'}}>
                                 {decryptedMessage}
                                 {lastObjectAnchor}
                             </Label></p>
