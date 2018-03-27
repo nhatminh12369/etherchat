@@ -14,6 +14,7 @@ import {
 import HeaderMenu from '../components/HeaderMenu';
 import web3 from '../ethereum/web3';
 import PrivateKeyModal from '../components/EnterPrivateKeyModal';
+import UpdateProfileModal from '../components/UpdateProfileModal';
 import GuideModal from '../components/GuideModal';
 import Head from 'next/head';
 import Account from '../lib/Account';
@@ -67,6 +68,7 @@ class Index extends Component {
         var listHeight = this.state.height - 100;
         return (
             <Container>
+                <UpdateProfileModal account={account} />
                 <PrivateKeyModal account={account} />
                 <HeaderMenu account={account} />
                 <GuideModal />

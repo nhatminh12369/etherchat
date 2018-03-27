@@ -1,6 +1,6 @@
 pragma solidity ^0.4.20;
 
-contract EtherMessage {
+contract CryptoMessenger {
     event messageSentEvent(address indexed from, address indexed to, bytes message, bytes32 encryption);
     event addContactEvent(address indexed from, address indexed to);
     event acceptContactEvent(address indexed from, address indexed to);
@@ -19,9 +19,6 @@ contract EtherMessage {
     mapping (address => address[]) contactLists;
     mapping (address => mapping (address => RelationshipType)) relationships;
     mapping (address => Member) public members;
-    
-    function EtherMessage() public {
-    }
     
     // TRANSACTIONAL METHODS
 
@@ -75,12 +72,9 @@ contract EtherMessage {
         relationships[msg.sender][from] = RelationshipType.Connected;
     }
     
-    function setName(bytes32 name) public onlyMember {
+    function updateProfile(bytes32 name, bytes32 avatarUrl) public onlyMember {
         members[msg.sender].name = name;
-    }
-    
-    function setAvatarUrl(bytes32 url) public onlyMember {
-        members[msg.sender].avatarUrl = url;
+        members[msg.sender].avatarUrl = avatarUrl;
     }
     
     modifier onlyMember() {

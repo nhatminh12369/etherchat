@@ -19,7 +19,7 @@ class HeaderMenu extends Component {
     constructor(props) {
         super(props);
         this.account = props.account;
-        this.state = {address: "", balance: ""};
+        this.state = {address: "", balance: "", name: "", avatarUrl: ""};
     }
 
     clearAllData = () => {
@@ -35,6 +35,8 @@ class HeaderMenu extends Component {
         appDispatcher.register((payload) => {
             if (payload.action == Constant.EVENT.ACCOUNT_BALANCE_UPDATED) {
                 this.setState({balance: this.account.balance});
+            } else if (payload.action == Constant.EVENT.ACCOUNT_INFO_UPDATED) {
+                this.setState({name: this.account.name, avatarUrl: this.account.avatarUrl});
             }
         })
     }
@@ -48,12 +50,13 @@ class HeaderMenu extends Component {
     }
 
     handleDropdownClicked = (event, data) => {
-        if (data.name == 'changeNameItem') {
-
-        } else if (data.name == 'changeAvatarItem') {
-
+        if (data.name == 'updateProfile') {
+            appDispatcher.dispatch({
+                action: Constant.ACTION.OPEN_UPDATE_PROFILE
+            });
         } else if (data.name == 'logOutItem') {
             this.clearAllData();
+            window.location.reload();
         } else if (data.name == 'changeEthNetwork') {
             if (data.networkid != Constant.ENV.EthNetworkId) {
                 Constant.ENV.EthNetworkId = data.networkid;
@@ -69,9 +72,16 @@ class HeaderMenu extends Component {
 
     render() {
         var accountInfo = (<Loader active />);
-        var dropdownTrigger = (
-            <span><Icon name='user' size='large'/>{this.state.address.substr(0,10)}</span>
-        );
+        var dropdownTrigger;
+        if (this.state.avatarUrl) { 
+            dropdownTrigger = (
+                <span><Icon src={this.state.avatarUrl} size='large'/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
+            );
+        } else {
+            dropdownTrigger = (
+                <span><Icon name='user' size='large'/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
+            );
+        }
         if (this.state.address != "") {
             var networkItems = [];
             for (var i=0;i<Constant.NETWORK_LIST.length;i++) {
@@ -94,7 +104,6 @@ class HeaderMenu extends Component {
                         <List>
                         <List.Item>{this.state.address}</List.Item>
                         <List.Item>
-                        
                             Balance: <Label color='orange'>{parseFloat(web3.utils.fromWei("" +this.state.balance, 'ether')).toFixed(8) + ' ETH' }</Label>
                         </List.Item>
                         </List>
@@ -102,11 +111,8 @@ class HeaderMenu extends Component {
                     <Menu.Item>
                         <Dropdown item trigger={dropdownTrigger}>
                             <Dropdown.Menu>
-                                <Dropdown.Item name='changeNameItem' onClick={this.handleDropdownClicked}>
-                                    <Icon name='write'/>Change name
-                                </Dropdown.Item>
-                                <Dropdown.Item name='changeAvatarItem' onClick={this.handleDropdownClicked}>
-                                    <Icon name='write'/>Change avatar
+                                <Dropdown.Item name='updateProfile' onClick={this.handleDropdownClicked}>
+                                    <Icon name='write'/>Update profile
                                 </Dropdown.Item>
                                 <Dropdown.Item name='logOutItem' onClick={this.handleDropdownClicked}>
                                     <Icon name='log out'/>Log out

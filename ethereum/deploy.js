@@ -1,6 +1,6 @@
 const HDWalletProvider = require('truffle-hdwallet-provider');
 const Web3 = require('web3');
-const compiledFactory = require('./build/EtherMessage.json');
+const compiledFactory = require('./build/CryptoMessenger.json');
 const interface = compiledFactory.interface;
 const bytecode = compiledFactory.bytecode;
 
