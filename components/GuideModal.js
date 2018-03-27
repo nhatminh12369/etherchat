@@ -30,7 +30,7 @@ class GuideModal extends Component {
     checkForFirstTime() {
         if (typeof(Storage) !== "undefined") {
             var firstTimeUse = window.localStorage.firstTimeUse;
-            if (firstTimeUse == undefined) {
+            if (firstTimeUse == undefined || firstTimeUse == false) {
                 this.setState({modalOpen: true});
             }
         }
