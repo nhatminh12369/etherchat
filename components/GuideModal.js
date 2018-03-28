@@ -6,6 +6,7 @@ import {
     Icon
 } from 'semantic-ui-react';
 import appDispatcher from './AppDispatcher';
+import Constant from './Constant';
 
 class GuideModal extends Component {
     state = { modalOpen: false, key: ""}
@@ -18,7 +19,7 @@ class GuideModal extends Component {
         if (firstTimeUse == undefined) {
             window.localStorage.setItem('firstTimeUse', "false");
             appDispatcher.dispatch({
-                action: 'open_privatekey_modal',
+                action: Constant.ACTION.OPEN_PRIVATE_KEY_MODAL,
             });
         }
     };

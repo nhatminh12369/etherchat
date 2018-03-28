@@ -1,7 +1,8 @@
 module.exports.ACTION = {
     ADD_CONTACT: 'ADD_CONTACT_ACTION',
     SELECT_CONTACT: 'SELECT_CONTACT_ACTION',
-    OPEN_UPDATE_PROFILE: 'OPEN_UPDATE_PROFILE'
+    OPEN_UPDATE_PROFILE: 'OPEN_UPDATE_PROFILE',
+    OPEN_PRIVATE_KEY_MODAL: 'OPEN_PRIVATE_KEY_MODAL'
 }
 
 module.exports.EVENT = {
@@ -15,13 +16,13 @@ module.exports.NETWORK_LIST = [
     {
         id: 1,
         name: 'Main Network',
-        contractAddress: 'Address on main net',
+        contractAddress: '0x3e01d88fd2c2feedf3ff761225628c92182345bc',
         providerUrl: 'https://mainnet.infura.io/Q2aBIgYNhIB60VsqyrN1'
     },
     {
         id: 4,
         name: 'Rinkeby Test Net',
-        contractAddress: '0xFC498608A505a602fC684628369E2B21a1Fa02B8',
+        contractAddress: '0x8291b4E82F967A855455b7773Ce99165CeE8bb55',
         providerUrl: 'https://rinkeby.infura.io/Q2aBIgYNhIB60VsqyrN1'
     }
 ]

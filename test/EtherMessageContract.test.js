@@ -6,7 +6,7 @@ const {testAccounts} = require('./testAccounts');
 const utils = require('../lib/Utils');
 const web3 = new Web3(ganache.provider({accounts: testAccounts}));
 
-const compiledEtherMessage = require('../ethereum/build/EtherMessage.json');
+const compiledEtherMessage = require('../ethereum/build/CryptoMessenger.json');
 
 let accounts;
 let contract;

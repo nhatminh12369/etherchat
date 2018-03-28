@@ -19,7 +19,8 @@ class HeaderMenu extends Component {
     constructor(props) {
         super(props);
         this.account = props.account;
-        this.state = {address: "", balance: "", name: "", avatarUrl: ""};
+        this.state = {address: "", balance: "", name: "", avatarUrl: "", isLoading: true, isJoined: false};
+        this.reloadCount = 0;
     }
 
     clearAllData = () => {
@@ -36,16 +37,22 @@ class HeaderMenu extends Component {
             if (payload.action == Constant.EVENT.ACCOUNT_BALANCE_UPDATED) {
                 this.setState({balance: this.account.balance});
             } else if (payload.action == Constant.EVENT.ACCOUNT_INFO_UPDATED) {
-                this.setState({name: this.account.name, avatarUrl: this.account.avatarUrl});
+                this.setState({name: this.account.name, avatarUrl: this.account.avatarUrl, isJoined: this.account.isJoined});
             }
         })
     }
 
     getAccountInfo = () => {
-        if (this.account.isValid) {
-            this.setState({address: this.account.getAddress(), balance: this.account.balance});
+        var address = this.account.getAddress();
+        if (address) {
+            this.setState({address: address, balance: this.account.balance, isLoading: false, isJoined: this.account.isJoined});
         } else {
-            setTimeout(this.getAccountInfo, 800);
+            if (this.reloadCount == 1) {
+                this.setState({isLoading: false});
+            } else {
+                this.reloadCount++;
+                setTimeout(this.getAccountInfo, 800);
+            }
         }
     }
 
@@ -70,45 +77,39 @@ class HeaderMenu extends Component {
         this.account.storageManager.removeNetworkDependentData();
     }
 
+    handleImportPrivateKeyClick() {
+        appDispatcher.dispatch({
+            action: Constant.ACTION.OPEN_PRIVATE_KEY_MODAL
+        });
+    }
+
     render() {
-        var accountInfo = (<Loader active />);
-        var dropdownTrigger;
-        if (this.state.avatarUrl) { 
-            dropdownTrigger = (
-                <span><Icon src={this.state.avatarUrl} size='large'/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
-            );
-        } else {
-            dropdownTrigger = (
-                <span><Icon name='user' size='large'/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
-            );
-        }
-        if (this.state.address != "") {
-            var networkItems = [];
-            for (var i=0;i<Constant.NETWORK_LIST.length;i++) {
-                networkItems.push(
-                    <Dropdown.Item key={'networkItem' + i} networkid={Constant.NETWORK_LIST[i].id} name='changeEthNetwork' onClick={this.handleDropdownClicked}>
-                        {Constant.NETWORK_LIST[i].name}
-                    </Dropdown.Item>
-                );
-            }
-            accountInfo = (
-                <Menu.Menu position='right'>
-                    <Menu.Item>
-                    <Dropdown item text={Constant.ENV.NetworkName}>
-                            <Dropdown.Menu>
-                                {networkItems}
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    </Menu.Item>
-                    <Menu.Item>
-                        <List>
-                        <List.Item>{this.state.address}</List.Item>
-                        <List.Item>
-                            Balance: <Label color='orange'>{parseFloat(web3.utils.fromWei("" +this.state.balance, 'ether')).toFixed(8) + ' ETH' }</Label>
-                        </List.Item>
-                        </List>
-                    </Menu.Item>
-                    <Menu.Item>
+        var accountInfo = (<Loader inverted active />);
+        if (this.state.isLoading == false) {
+            if (this.state.address) {
+                var dropdownTrigger;
+                if (this.state.avatarUrl) { 
+                    dropdownTrigger = (
+                        <span><Icon src={this.state.avatarUrl} size='large'/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
+                    );
+                } else {
+                    dropdownTrigger = (
+                        <span><Icon name='user' size='large'/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
+                    );
+                }
+
+                var networkItems = [];
+                for (var i=0;i<Constant.NETWORK_LIST.length;i++) {
+                    networkItems.push(
+                        <Dropdown.Item key={'networkItem' + i} networkid={Constant.NETWORK_LIST[i].id} name='changeEthNetwork' onClick={this.handleDropdownClicked}>
+                            {Constant.NETWORK_LIST[i].name}
+                        </Dropdown.Item>
+                    );
+                }
+
+                var memberInfo;
+                if (this.account.isJoined) {
+                    memberInfo = (
                         <Dropdown item trigger={dropdownTrigger}>
                             <Dropdown.Menu>
                                 <Dropdown.Item name='updateProfile' onClick={this.handleDropdownClicked}>
@@ -119,9 +120,45 @@ class HeaderMenu extends Component {
                                 </Dropdown.Item>
                             </Dropdown.Menu>
                         </Dropdown>
-                    </Menu.Item>
-                </Menu.Menu>
-            );
+                    );
+                } else {
+                    memberInfo = (
+                        <Button color='orange'>Join CryptoMessenger</Button>
+                    );
+                }
+
+
+                accountInfo = (
+                    <Menu.Menu position='right'>
+                        <Menu.Item>
+                        <Dropdown item text={Constant.ENV.NetworkName}>
+                                <Dropdown.Menu>
+                                    {networkItems}
+                                </Dropdown.Menu>
+                            </Dropdown>
+                        </Menu.Item>
+                        <Menu.Item>
+                            <List>
+                            <List.Item>{this.state.address}</List.Item>
+                            <List.Item>
+                                Balance: <Label color='orange'>{parseFloat(web3.utils.fromWei("" +this.state.balance, 'ether')).toFixed(8) + ' ETH' }</Label>
+                            </List.Item>
+                            </List>
+                        </Menu.Item>
+                        <Menu.Item>
+                            {memberInfo}
+                        </Menu.Item>
+                    </Menu.Menu>
+                );
+            } else {
+                accountInfo = (
+                    <Menu.Menu position='right'>
+                        <Menu.Item>
+                            <Button onClick={this.handleImportPrivateKeyClick} color='blue'>Import private key</Button>
+                        </Menu.Item>
+                    </Menu.Menu>
+                );
+            }
         }
 
         return (

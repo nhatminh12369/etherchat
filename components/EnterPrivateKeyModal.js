@@ -8,10 +8,9 @@ import {
     Message
 } from 'semantic-ui-react';
 import appDispatcher from '../components/AppDispatcher';
+import Constant from './Constant';
 
 class EnterPrivateKeyModal extends Component {
-    
-
     constructor(props) {
         super(props);
         this.state = { modalOpen: false, key: "", errorMessage:""}
@@ -21,7 +20,6 @@ class EnterPrivateKeyModal extends Component {
     handleClose = (e) => {
         e.preventDefault();
         this.setState({errorMessage: ""});
-
         this.setState({ modalOpen: false })
     };
 
@@ -31,9 +29,7 @@ class EnterPrivateKeyModal extends Component {
 
         var success = this.account.setPrivateKey(this.state.key);
         if (success) {
-            this.setState({ modalOpen: false })
-            window.localStorage.setItem("privateKey", this.state.key);
-            window.localStorage.setItem("currentDataBlock", "0");
+            this.setState({ modalOpen: false });
         } else {
             this.setState({errorMessage: "Invalid private key"});
         }
@@ -41,10 +37,8 @@ class EnterPrivateKeyModal extends Component {
     };
 
     componentWillMount() {
-        // this.checkForPrivateKey();
-
         appDispatcher.register((payload) => {
-            if (payload.action == "open_privatekey_modal") {
+            if (payload.action == Constant.ACTION.OPEN_PRIVATE_KEY_MODAL) {
                 this.setState({modalOpen: true});
             }
         })
@@ -57,16 +51,18 @@ class EnterPrivateKeyModal extends Component {
                 onClose={this.handleClose}
                 size='small'
                 >
-                <Header icon="" content="Please enter your private key" />
+                <Header icon="" content="Import private key"/>
                     <Modal.Content>
-                        <Input fluid value={this.state.key} onChange={event => this.setState({key: event.target.value})}/>
+                        <Input fluid value={this.state.key} 
+                            onChange={event => this.setState({key: event.target.value})}
+                            placeholder='Ethereum private key'/>
                         <Message error header={this.state.errorMessage} hidden={this.state.errorMessage == ""}/>
                     </Modal.Content>
                     <Modal.Actions>
-                    <Button color='green' onClick={this.handleConfirm}>
+                    <Button color='blue' onClick={this.handleConfirm}>
                         <Icon name='checkmark' /> Confirm
                     </Button>
-                    <Button color='red' onClick={this.handleClose}>
+                    <Button color='grey' onClick={this.handleClose}>
                         <Icon name='close' /> Close
                     </Button>
                     </Modal.Actions>
