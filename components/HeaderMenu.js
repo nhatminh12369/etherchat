@@ -19,7 +19,9 @@ class HeaderMenu extends Component {
     constructor(props) {
         super(props);
         this.account = props.account;
-        this.state = {address: "", balance: "", name: "", avatarUrl: "", isLoading: true, isJoined: false};
+        this.state = {address: "", balance: "", name: "", 
+            avatarUrl: "", isLoading: true, isJoinButtonLoading: false, 
+            isJoined: false, numPendingTx: 0};
         this.reloadCount = 0;
     }
 
@@ -38,6 +40,8 @@ class HeaderMenu extends Component {
                 this.setState({balance: this.account.balance});
             } else if (payload.action == Constant.EVENT.ACCOUNT_INFO_UPDATED) {
                 this.setState({name: this.account.name, avatarUrl: this.account.avatarUrl, isJoined: this.account.isJoined});
+            } else if (payload.action == Constant.EVENT.PENDING_TRANSACTION_UPDATED) {
+                this.setState({numPendingTx: this.account.numPendingTx});
             }
         })
     }
@@ -73,11 +77,16 @@ class HeaderMenu extends Component {
         }
     }
 
-    removeNetworkDependentData() {
+    removeNetworkDependentData = () => {
         this.account.storageManager.removeNetworkDependentData();
     }
 
-    handleImportPrivateKeyClick() {
+    handleJoinClicked = () => {
+        this.account.joinContract();
+        this.setState({isJoinButtonLoading: true});
+    }
+
+    handleImportPrivateKeyClicked = () => {
         appDispatcher.dispatch({
             action: Constant.ACTION.OPEN_PRIVATE_KEY_MODAL
         });
@@ -85,12 +94,15 @@ class HeaderMenu extends Component {
 
     render() {
         var accountInfo = (<Loader inverted active />);
+
         if (this.state.isLoading == false) {
             if (this.state.address) {
+                var addressExplorerUrl = Constant.ENV.ExplorerUrl + 'address/' + this.state.address;
                 var dropdownTrigger;
+
                 if (this.state.avatarUrl) { 
                     dropdownTrigger = (
-                        <span><Icon src={this.state.avatarUrl} size='large'/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
+                        <span><Image src={this.state.avatarUrl} avatar/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
                     );
                 } else {
                     dropdownTrigger = (
@@ -123,10 +135,21 @@ class HeaderMenu extends Component {
                     );
                 } else {
                     memberInfo = (
-                        <Button color='orange'>Join CryptoMessenger</Button>
+                        <Button color='orange' onClick={this.handleJoinClicked} 
+                            loading={this.state.isJoinButtonLoading} 
+                            disabled={this.state.isJoinButtonLoading}>Join CryptoMessenger</Button>
                     );
                 }
 
+                var pendingTxItem;
+                if (this.state.numPendingTx > 0) {
+                    pendingTxItem = (
+                        <Label as='a' color='yellow' href={addressExplorerUrl} target='_blank'>
+                            <Icon name='spinner' loading/>
+                            {this.state.numPendingTx} pending tx
+                        </Label>
+                    );
+                }
 
                 accountInfo = (
                     <Menu.Menu position='right'>
@@ -139,9 +162,14 @@ class HeaderMenu extends Component {
                         </Menu.Item>
                         <Menu.Item>
                             <List>
-                            <List.Item>{this.state.address}</List.Item>
                             <List.Item>
-                                Balance: <Label color='orange'>{parseFloat(web3.utils.fromWei("" +this.state.balance, 'ether')).toFixed(8) + ' ETH' }</Label>
+                                <a href={addressExplorerUrl} target='_blank'>
+                                    {this.state.address}
+                                </a>
+                            </List.Item>
+                            <List.Item>
+                                Balance: <Label as='a' href={addressExplorerUrl} target='_blank' color='orange'>{parseFloat(web3.utils.fromWei("" +this.state.balance, 'ether')).toFixed(8) + ' ETH' }</Label>
+                                {pendingTxItem}
                             </List.Item>
                             </List>
                         </Menu.Item>
@@ -154,7 +182,7 @@ class HeaderMenu extends Component {
                 accountInfo = (
                     <Menu.Menu position='right'>
                         <Menu.Item>
-                            <Button onClick={this.handleImportPrivateKeyClick} color='blue'>Import private key</Button>
+                            <Button onClick={this.handleImportPrivateKeyClicked} color='blue'>Import private key</Button>
                         </Menu.Item>
                     </Menu.Menu>
                 );

@@ -65,14 +65,14 @@ class Index extends Component {
     render() {
         var account = this.account;
 
-        var listHeight = this.state.height - 100;
+        var listHeight = this.state.height - 120;
         return (
             <Container>
                 <UpdateProfileModal account={account} />
                 <PrivateKeyModal account={account} />
                 <HeaderMenu account={account} />
                 <GuideModal />
-            <Grid column={2} style={{paddingTop: 80}}>
+            <Grid column={2} style={{paddingTop: 100}}>
                 <Grid.Row stretched>
                     <Grid.Column width={6} style={{height: listHeight + "px", float: 'left'}}>
                         <ContactList height={listHeight} account={account}/>

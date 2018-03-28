@@ -93,11 +93,11 @@ class ContactList extends Component {
                 var relationshipContent = (<div></div>);
                 if (user.relationship == Relationship.NoRelation) {
                     relationshipContent = (
-                        <Button primary floated='right' loading={user.isAccepting} disabled={user.isAccepting} 
+                        <Button color='orange' floated='right' loading={user.isAccepting} disabled={user.isAccepting} 
                             onClick={this.acceptContactRequest} value={contactAddresses[i]}>Accept</Button>
                     );
                 } else if (user.relationship == Relationship.Requested) {
-                    relationshipContent = (<List.Content floated='right'><Label color='orange' floated='right'>Pending</Label></List.Content>);
+                    relationshipContent = (<List.Content floated='right'><Label color='yellow' floated='right'>Pending</Label></List.Content>);
                 }
 
                 var address = contactAddresses[i];
@@ -119,7 +119,7 @@ class ContactList extends Component {
             <div style={{width: '100%'}}>
                 <div style={{height: 40, width: '100%'}}>
                 <Header as='h2' style={{float: 'left'}}>Contact list</Header>
-                <Button color='orange' style={{float: 'right'}} onClick={this.addContactClicked}><Icon name='add user'></Icon>Add</Button>
+                <Button color='blue' style={{float: 'right'}} onClick={this.addContactClicked}><Icon name='add user'></Icon>Add</Button>
                 </div>
                 <Dimmer.Dimmable as='div' style={{height: height - 40, overflow: 'auto', float: 'left', width:'100%'}}>
                     {htmlContent}

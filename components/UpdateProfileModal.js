@@ -24,6 +24,7 @@ class UpdateProfileModal extends Component {
     updateProfileClicked = (e) => {
         e.preventDefault();
         this.account.updateProfile(this.state.name, this.state.avatarUrl);        
+        this.setState({ modalOpen: false });
     }
 
     componentDidMount() {
@@ -68,7 +69,7 @@ class UpdateProfileModal extends Component {
                         </Form>
                     </Modal.Content>
                     <Modal.Actions>
-                    <Button color='orange' onClick={this.handleClose}>
+                    <Button color='orange' onClick={this.updateProfileClicked}>
                         Update
                     </Button>
                     <Button color='grey' onClick={this.handleClose}>

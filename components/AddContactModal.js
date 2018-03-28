@@ -17,7 +17,7 @@ import Constant from './Constant';
 class AddContactModal extends Component {
     constructor(props) {
         super(props);
-        this.state = { modalOpen: false, errorMessage: "", isLoading: false, address: ""}
+        this.state = { modalOpen: false, errorMessage: "", address: ""}
         this.account = props.account;
     }
     
@@ -38,30 +38,13 @@ class AddContactModal extends Component {
     handleAddContact = (e) => {
         if (web3.utils.isAddress(this.state.address)) {
             this.account.addContact(this.state.address);
-            this.setState({isLoading: true, errorMessage: ""});
+            this.setState({errorMessage: "", modalOpen: false});
         } else {
-            this.setState({errorMessage: "Invalid ethereum address"});
+            this.setState({errorMessage: "Invalid ethereum address", modalOpen: false});
         }
     }
 
     render() {
-        var content;
-        if (this.state.isLoading == false) {
-            content = (
-                <Modal.Content>
-                    <Input fluid value={this.state.address} onChange={event => this.setState({address: event.target.value})}/>
-                    <Message error header={this.state.errorMessage} hidden={this.state.errorMessage == ""}/>
-                </Modal.Content>
-            );
-        } else {
-            content = (
-                <Dimmer.Dimmable as={Modal.Content} dimmed={true}>
-                    <Dimmer active inverted >
-                        <Loader active />
-                    </Dimmer>
-                </Dimmer.Dimmable>
-            )
-        }
         return (
             <Modal
                 open={this.state.modalOpen}
@@ -69,12 +52,15 @@ class AddContactModal extends Component {
                 size='small'
                 >
                 <Header icon="" content="Add contact by address" />
-                    {content}
+                    <Modal.Content>
+                        <Input fluid value={this.state.address} onChange={event => this.setState({address: event.target.value})}/>
+                        <Message error header={this.state.errorMessage} hidden={this.state.errorMessage == ""}/>
+                    </Modal.Content>
                     <Modal.Actions>
-                    <Button color='green' onClick={this.handleAddContact}>
+                    <Button color='orange' onClick={this.handleAddContact}>
                         <Icon name='checkmark' /> Add
                     </Button>
-                    <Button color='red' onClick={this.handleClose}>
+                    <Button color='grey' onClick={this.handleClose}>
                         <Icon name='close' /> Close
                     </Button>
                 </Modal.Actions>

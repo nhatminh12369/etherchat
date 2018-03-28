@@ -121,7 +121,7 @@ class Chat extends Component {
                     <Input fluid disabled={this.state.address ? false : true}
                         value={this.state.composedMessage} 
                         onChange={(e) => this.setState({composedMessage: e.target.value})} 
-                        action={{ color: 'teal', labelPosition: 'right', icon: 'send', content: 'Send', onClick: (e)=>this.sendMessage()}}/>
+                        action={{ color: 'orange', labelPosition: 'right', icon: 'send', content: 'Send', onClick: (e)=>this.sendMessage()}}/>
                 </Segment>
             </div>
         );
