@@ -20,6 +20,7 @@ import Head from 'next/head';
 import Account from '../lib/Account';
 import ContactList from '../components/ContactList';
 import Chat from '../components/Chat';
+import ErrorModal from '../components/ErrorModal';
 
 class Index extends Component {
     constructor(props) {
@@ -72,6 +73,7 @@ class Index extends Component {
                 <PrivateKeyModal account={account} />
                 <HeaderMenu account={account} />
                 <GuideModal />
+                <ErrorModal />
             <Grid column={2} style={{paddingTop: 100}}>
                 <Grid.Row stretched>
                     <Grid.Column width={6} style={{height: listHeight + "px", float: 'left'}}>

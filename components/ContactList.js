@@ -43,16 +43,30 @@ class ContactList extends Component {
     }
 
     addContactClicked = () => {
-        appDispatcher.dispatch({
-            action: Constant.ACTION.ADD_CONTACT
-        });
+        if (this.account.isJoined) {
+            appDispatcher.dispatch({
+                action: Constant.ACTION.ADD_CONTACT
+            });
+        } else {
+            appDispatcher.dispatch({
+                action: Constant.EVENT.ENCOUNTERED_ERROR,
+                message: 'Please join CryptoMessenger first by click on the \'Join\' button on the top-right corner'
+            });
+        }
     }
 
     acceptContactRequest = (event) => {
-        var address = event.target.value;
-        this.account.storageManager.contacts[address].isAccepting = true;
-        this.account.acceptContactRequest(address);
-        this.forceUpdate();
+        if (this.account.isJoined) {
+            var address = event.target.value;
+            this.account.storageManager.contacts[address].isAccepting = true;
+            this.account.acceptContactRequest(address);
+            this.forceUpdate();
+        } else {
+            appDispatcher.dispatch({
+                action: Constant.EVENT.ENCOUNTERED_ERROR,
+                message: 'Please join CryptoMessenger first by click on the \'Join\' button on the top-right corner'
+            });
+        }
     }
 
     listItemClicked = (address, event) => {
