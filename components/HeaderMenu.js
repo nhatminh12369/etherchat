@@ -68,7 +68,12 @@ class HeaderMenu extends Component {
         } else if (data.name == 'logOutItem') {
             this.clearAllData();
             window.location.reload();
-        } else if (data.name == 'changeEthNetwork') {
+        } else if (data.name == 'settingsItem') {
+            appDispatcher.dispatch({
+                action: Constant.ACTION.OPEN_SETTINGS_MODAL
+            })
+        } 
+         else if (data.name == 'changeEthNetwork') {
             if (data.networkid != Constant.ENV.EthNetworkId) {
                 Constant.ENV.EthNetworkId = data.networkid;
                 this.removeNetworkDependentData();
@@ -126,6 +131,9 @@ class HeaderMenu extends Component {
                             <Dropdown.Menu>
                                 <Dropdown.Item name='updateProfile' onClick={this.handleDropdownClicked}>
                                     <Icon name='write'/>Update profile
+                                </Dropdown.Item>
+                                <Dropdown.Item name='settingsItem' onClick={this.handleDropdownClicked}>
+                                    <Icon name='settings'/>Settings
                                 </Dropdown.Item>
                                 <Dropdown.Item name='logOutItem' onClick={this.handleDropdownClicked}>
                                     <Icon name='log out'/>Log out

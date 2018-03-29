@@ -6,22 +6,6 @@ var utils = require('../support/Utils');
 
 class LocalStorageManager {
 
-    // getContactData(address) {
-    //     if (typeof(Storage) !== 'undefined' && window.localStorage[address] != undefined) {
-    //         return JSON.parse(window.localStorage[address]);
-    //     } else {
-    //         return undefined;
-    //     }
-    // }
-
-    // getContactAddresses() {
-    //     if (typeof(Storage) !== 'undefined' && window.localStorage.contactAddresses != undefined) {
-    //         return JSON.parse(window.localStorage.contactAddresses);
-    //     } else {
-    //         return [];
-    //     }
-    // }
-
     initialize() {
         this.contacts = {};
         this.loadLocalContactAddresses();
@@ -194,6 +178,20 @@ class LocalStorageManager {
     getJoinedStatus() {
         if (typeof(Storage) !== 'undefined' && window.localStorage.isJoined != undefined) {
             return window.localStorage.isJoined;
+        } else {
+            return false;
+        }
+    }
+
+    setAskForTransactionApproval(boolValue) {
+        if (typeof(Storage) !== 'undefined') {
+            window.localStorage.setItem('askForTransactionApproval', boolValue);
+        }
+    }
+    
+    getAskForTransactionApproval() {
+        if (typeof(Storage) !== 'undefined' && window.localStorage.askForTransactionApproval) {
+            return (window.localStorage.askForTransactionApproval == "true");
         } else {
             return false;
         }

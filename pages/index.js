@@ -21,6 +21,8 @@ import AccountManager from '../support/AccountManager';
 import ContactList from '../components/ContactList';
 import Chat from '../components/Chat';
 import ErrorModal from '../components/ErrorModal';
+import SettingsModal from '../components/SettingsModal';
+import TransactionModal from '../components/TransactionModal';
 
 class Index extends Component {
     constructor(props) {
@@ -74,6 +76,8 @@ class Index extends Component {
                 <HeaderMenu account={account} />
                 <GuideModal />
                 <ErrorModal />
+                <SettingsModal account={account} />
+                <TransactionModal />
             <Grid column={2} style={{paddingTop: 100}}>
                 <Grid.Row stretched>
                     <Grid.Column width={6} style={{height: listHeight + "px", float: 'left'}}>
