@@ -2,13 +2,14 @@ import {Component} from 'react';
 import {
     Modal,
     Header,
-    Button
+    Button,
+    Message
 } from 'semantic-ui-react';
 import appDispatcher from './AppDispatcher';
 import Constant from './Constant';
 
 class ErrorModal extends Component {
-    state = { modalOpen: false, message: ""}
+    state = { modalOpen: false, message: "", title: ""}
 
     handleClose = (e) => {
         e.preventDefault();
@@ -18,7 +19,7 @@ class ErrorModal extends Component {
     componentDidMount() {
         appDispatcher.register((payload) => {
             if (payload.action == Constant.EVENT.ENCOUNTERED_ERROR) {
-                this.setState({modalOpen: true, message: payload.message});
+                this.setState({modalOpen: true, message: payload.message, title: payload.title});
             }
         });
     }
@@ -30,9 +31,9 @@ class ErrorModal extends Component {
                 onClose={this.handleClose}
                 size='small'
                 >
-                <Header icon="" content="Notice" />
+                <Header icon="" content={this.state.title ? this.state.title : "Notice"} />
                     <Modal.Content>
-                        <p>{this.state.message}</p>
+                        <Message error>{this.state.message}</Message>
                     </Modal.Content>
                     <Modal.Actions>
                     <Button color='grey' onClick={this.handleClose}>

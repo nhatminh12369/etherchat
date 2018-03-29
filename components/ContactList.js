@@ -11,7 +11,8 @@ import {
     Icon,
     Segment,
     Label,
-    Header
+    Header,
+    Popup
 } from 'semantic-ui-react';
 import appDispatcher from './AppDispatcher';
 import Constant from './Constant';
@@ -103,15 +104,33 @@ class ContactList extends Component {
             htmlContent = (<List selection animated verticalAlign='middle'>{contactItems}</List>);
         } else {
             for (var i=0;i<contactAddresses.length;i++) {
-                var user = this.account.storageManager.contacts[contactAddresses[i]];                
-                var relationshipContent = (<div></div>);
+                var user = this.account.storageManager.contacts[contactAddresses[i]];
+                var addressExplorerUrl = Constant.ENV.ExplorerUrl + 'address/' + contactAddresses[i];
+                var rightAlignedContent = (<div></div>);
                 if (user.relationship == Relationship.NoRelation) {
-                    relationshipContent = (
-                        <Button color='orange' floated='right' loading={user.isAccepting} disabled={user.isAccepting} 
-                            onClick={this.acceptContactRequest} value={contactAddresses[i]}>Accept</Button>
+                    rightAlignedContent = (
+                        <div>
+                            <Button color='orange' floated='right' loading={user.isAccepting} disabled={user.isAccepting} 
+                                onClick={this.acceptContactRequest} value={contactAddresses[i]}>Accept</Button>
+                            <Popup  key={'info_button_popup_' + i}
+                                    trigger={<Button color='green' as='a' href={addressExplorerUrl} target='_blank' circular icon='info circle'></Button>}
+                                    content='View on Etherscan'
+                            />
+                        </div>
                     );
                 } else if (user.relationship == Relationship.Requested) {
-                    relationshipContent = (<List.Content floated='right'><Label color='yellow' floated='right'>Pending</Label></List.Content>);
+                    rightAlignedContent = (
+                        <List.Content floated='right'>
+                            <Popup  key={'wait_popup_' + i}
+                                    trigger={<Button color='yellow' circular icon='wait'></Button>}
+                                    content='Pending acceptance'
+                            />
+                            <Popup  key={'info_button_popup_' + i}
+                                    trigger={<Button color='green' as='a' href={addressExplorerUrl} target='_blank' circular icon='info circle'></Button>}
+                                    content='View on Etherscan'
+                            />
+                        </List.Content>
+                    );
                 }
 
                 var address = contactAddresses[i];
@@ -119,10 +138,12 @@ class ContactList extends Component {
                     <List.Item active={address == this.state.selectedAddress} key={'contact_' + i} value={address} onClick={this.listItemClicked.bind(this,address)}>
                         <Image avatar src={user.avatarUrl ? user.avatarUrl : 'static/images/user.png'}/>
                         <List.Content>
-                            <List.Header>{user.name ? user.name : address.substr(0, 10)}</List.Header>
-                            {address.substr(0, 10)+'...'}
+                            <List.Header>
+                                {user.name ? user.name : address.substr(0, 10)}
+                            </List.Header>
+                            {address.substr(0,14) + '...'}
                         </List.Content>
-                        {relationshipContent}
+                        {rightAlignedContent}
                     </List.Item>
                 );
             }
