@@ -17,7 +17,7 @@ import PrivateKeyModal from '../components/EnterPrivateKeyModal';
 import UpdateProfileModal from '../components/UpdateProfileModal';
 import GuideModal from '../components/GuideModal';
 import Head from 'next/head';
-import Account from '../support/Account';
+import AccountManager from '../support/AccountManager';
 import ContactList from '../components/ContactList';
 import Chat from '../components/Chat';
 import ErrorModal from '../components/ErrorModal';
@@ -27,7 +27,7 @@ class Index extends Component {
         super(props);
         this.state = { width: 0, height: 0, contactList: [], messages: [], selectedContact: "" };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-        this.account = new Account();
+        this.account = new AccountManager();
     }
 
     componentDidMount() {

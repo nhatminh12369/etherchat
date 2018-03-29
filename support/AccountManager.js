@@ -12,10 +12,9 @@ var LocalStorageManager = require('./LocalStorageManager').default;
 import appDispatcher from '../support/AppDispatcher';
 var Constant = require('../support/Constant');
 
-class Account {
+class AccountManager {
     constructor() {
         this.isJoined = false;
-        // this.isReady = false;
         this.balance = 0;
         this.name = "";
         this.avatarUrl = "";
@@ -27,7 +26,6 @@ class Account {
         await this.getContract();
         this.startStorageManager();
         await this.startEventHandler();
-        // this.isReady = true;
     }
 
     getContract = async () => {
@@ -227,4 +225,4 @@ class Account {
     }
 }
 
-export default Account;
+export default AccountManager;
