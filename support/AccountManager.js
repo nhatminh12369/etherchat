@@ -10,6 +10,7 @@ var Relationship = require('./Relationship');
 var EventHandler = require('./EventHandler').default;
 var LocalStorageManager = require('./LocalStorageManager').default;
 import appDispatcher from '../support/AppDispatcher';
+import TransactionManager from './TransactionManager';
 var Constant = require('../support/Constant');
 
 class AccountManager {
@@ -23,9 +24,14 @@ class AccountManager {
     }
 
     initialize = async () => {
-        await this.getContract();
         this.startStorageManager();
+        this.startTransactionManager();
+        await this.getContract();
         await this.startEventHandler();
+    }
+
+    startTransactionManager = () => {
+        this.transactionManager = new TransactionManager();
     }
 
     getContract = async () => {
@@ -125,7 +131,7 @@ class AccountManager {
         var publicKeyLeft = '0x' + publicKey.toString('hex', 0, 32);
         var publicKeyRight = '0x' + publicKey.toString('hex', 32, 64);
 
-        this.sendToContractMethod(this.contract.methods.join(publicKeyLeft, publicKeyRight));
+        this.transactionManager.executeMethod(this.contract.methods.join(publicKeyLeft, publicKeyRight));
     }
 
     addContact = (address) => {
@@ -150,63 +156,27 @@ class AccountManager {
         var encryptedRaw = utils.encrypt(message, this.computeSecret(Buffer.from(publicKey, 'hex')));
         var encryptedMessage = '0x' + encryptedRaw.toString('hex');
         var method = this.contract.methods.sendMessage(toAddress, encryptedMessage, utils.getEncryptAlgorithmInHex());
-        var txHash = await this.sendToContractMethod(method);
-        this.storageManager.addMyLocalMessage(encryptedMessage, toAddress, utils.getEncryptAlgorithm(), txHash);
-        appDispatcher.dispatch({
-            action: Constant.EVENT.MESSAGES_UPDATED,
-            data: toAddress
-        })
+
+        this.transactionManager.executeMethod(method)
+            .on(Constant.EVENT.ON_APPROVED, (data) => {
+                console.log('approved transaction');
+            })
+            .on(Constant.EVENT.ON_REJECTED, (data) => {
+                console.log('rejected transaction');
+            });
+
+        // var txHash = await this.sendToContractMethod(method);
+        // this.storageManager.addMyLocalMessage(encryptedMessage, toAddress, utils.getEncryptAlgorithm(), txHash);
+        // appDispatcher.dispatch({
+        //     action: Constant.EVENT.MESSAGES_UPDATED,
+        //     data: toAddress
+        // })
     }
 
-    sendToContractMethod = async (method) => {
-        var data = method.encodeABI();
-        var estimatedGas;
-        try {
-            estimatedGas = await method.estimateGas({
-                gas: 3000000,
-                from: this.getAddress()
-            });
-        } catch(err) {
-            appDispatcher.dispatch({
-                action: Constant.EVENT.ENCOUNTERED_ERROR,
-                message: err.message,
-                title: "Opps!!"
-            });
-            return "";
-        }
-        var transactionCount = await web3.eth.getTransactionCount(this.walletAccount.getAddress().toString('hex'));
-        var gasPrice = await web3.eth.getGasPrice();
+    // Method, 
 
-        var rawTx = {
-            nonce: parseInt(transactionCount + this.numPendingTx),
-            gasPrice: parseInt(gasPrice),
-            gasLimit: parseInt(estimatedGas),
-            to: Constant.ENV.ContractAddress,
-            value: 0,
-            data: data
-        }
-        var tx = new Tx(rawTx);
-        tx.sign(this.walletAccount.getPrivateKey());
-        var serializedTx = tx.serialize();
-
-        this.updatePendingTx(this.numPendingTx+1);
-            web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'))
-                .on('receipt', (err, result) => {
-                    this.updatePendingTx(this.numPendingTx-1);
-                    if (err) {
-                        console.log(err);
-                    } else {
-                        console.log(result);
-                    }
-                }).on('error', (err) => {
-                    appDispatcher.dispatch({
-                        action: Constant.EVENT.ENCOUNTERED_ERROR,
-                        message: err.message,
-                        title: "Opps!!"
-                    });
-                    this.updatePendingTx(this.numPendingTx-1);
-                });
-        return '0x' + tx.hash().toString('hex');
+    sendToContractMethod = (method) => {
+        this.transactionManager.executeTransaction(method);
     }
 
     updatePendingTx(numPendingTx) {

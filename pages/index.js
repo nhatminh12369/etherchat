@@ -77,7 +77,7 @@ class Index extends Component {
                 <GuideModal />
                 <ErrorModal />
                 <SettingsModal account={account} />
-                <TransactionModal />
+                <TransactionModal account={account} />
             <Grid column={2} style={{paddingTop: 100}}>
                 <Grid.Row stretched>
                     <Grid.Column width={6} style={{height: listHeight + "px", float: 'left'}}>

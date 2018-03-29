@@ -16,7 +16,7 @@ class Chat extends Component {
     constructor(props) {
         super(props);
         this.account = props.account;
-        this.state = {address: "", composedMessage: "", messages: [], publicKey: ""}
+        this.state = {address: "", messages: [], publicKey: ""}
     }
 
     componentDidMount() {
@@ -48,9 +48,8 @@ class Chat extends Component {
         })
     }
 
-    sendMessage = () => {
-        this.account.sendMessage(this.state.address, this.state.composedMessage);
-        this.setState({composedMessage: ""});
+    sendMessage = (message) => {
+        this.account.sendMessage(this.state.address, message);
     }
 
     render() {
@@ -118,12 +117,37 @@ class Chat extends Component {
                     {messageItems}
                 </Segment>
                 <Segment>
-                    <Input fluid disabled={this.state.address ? false : true}
-                        value={this.state.composedMessage} 
-                        onChange={(e) => this.setState({composedMessage: e.target.value})} 
-                        action={{ color: 'orange', labelPosition: 'right', icon: 'send', content: 'Send', onClick: (e)=>this.sendMessage()}}/>
+                    <TextInput disabled={this.state.address ? false : true} onSend={this.sendMessage}/>
                 </Segment>
             </div>
+        );
+    }
+}
+
+class TextInput extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {disabled: props.disabled, content: ""};
+        this.onSend = props.onSend;
+    }
+
+    componentWillReceiveProps(props) {
+        this.setState({disabled: props.disabled});
+    }
+
+    sendMessageClicked() {
+        if (this.state.content) {
+            this.onSend(this.state.content);
+            this.setState({content: ""});
+        }
+    }
+
+    render() {
+        return (
+            <Input fluid disabled={this.state.disabled}
+                value={this.state.content} 
+                onChange={(e) => this.setState({content: e.target.value})} 
+                action={{ color: 'orange', labelPosition: 'right', icon: 'send', content: 'Send', onClick: (e)=>this.sendMessageClicked()}}/>
         );
     }
 }
