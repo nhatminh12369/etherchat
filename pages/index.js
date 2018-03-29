@@ -17,7 +17,7 @@ import PrivateKeyModal from '../components/EnterPrivateKeyModal';
 import UpdateProfileModal from '../components/UpdateProfileModal';
 import GuideModal from '../components/GuideModal';
 import Head from 'next/head';
-import Account from '../lib/Account';
+import Account from '../support/Account';
 import ContactList from '../components/ContactList';
 import Chat from '../components/Chat';
 import ErrorModal from '../components/ErrorModal';

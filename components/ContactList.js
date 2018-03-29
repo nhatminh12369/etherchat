@@ -14,10 +14,10 @@ import {
     Header,
     Popup
 } from 'semantic-ui-react';
-import appDispatcher from './AppDispatcher';
-import Constant from './Constant';
+import appDispatcher from '../support/AppDispatcher';
+import Constant from '../support/Constant';
 import AddContactModal from './AddContactModal';
-var {Relationship} = require('../lib/Relationship');
+var {Relationship} = require('../support/Relationship');
 
 class ContactList extends Component {
     constructor(props) {

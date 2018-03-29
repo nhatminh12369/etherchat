@@ -3,7 +3,7 @@ const ganache = require('ganache-cli');
 const Web3 = require('web3');
 const wallet = require('ethereumjs-wallet');
 const {testAccounts} = require('./testAccounts');
-const utils = require('../lib/Utils');
+const utils = require('../support/Utils');
 const web3 = new Web3(ganache.provider({accounts: testAccounts}));
 
 const compiledEtherMessage = require('../ethereum/build/CryptoMessenger.json');

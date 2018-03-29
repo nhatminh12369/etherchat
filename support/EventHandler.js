@@ -1,8 +1,8 @@
 import web3 from '../ethereum/web3';
-import appDispatcher from '../components/AppDispatcher';
-import Constant from '../components/Constant';
+import appDispatcher from '../support/AppDispatcher';
+import Constant from '../support/Constant';
 import { Relationship } from './Relationship';
-import utils from '../lib/Utils';
+import utils from '../support/Utils';
 
 class EventHandler {
     constructor(myAddress, contract, storageManager) {

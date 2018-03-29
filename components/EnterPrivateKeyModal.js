@@ -7,8 +7,8 @@ import {
     Input,
     Message
 } from 'semantic-ui-react';
-import appDispatcher from '../components/AppDispatcher';
-import Constant from './Constant';
+import appDispatcher from '../support/AppDispatcher';
+import Constant from '../support/Constant';
 
 class EnterPrivateKeyModal extends Component {
     constructor(props) {

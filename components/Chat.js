@@ -8,9 +8,9 @@ import {
     Header,
     Label
 } from 'semantic-ui-react';
-import appDispatcher from '../components/AppDispatcher';
-import Constant from '../components/Constant';
-import utils from '../lib/Utils';
+import appDispatcher from '../support/AppDispatcher';
+import Constant from '../support/Constant';
+import utils from '../support/Utils';
 
 class Chat extends Component {
     constructor(props) {

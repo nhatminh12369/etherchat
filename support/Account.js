@@ -3,14 +3,14 @@ import { sha256 } from 'ethereumjs-util';
 var Wallet = require('ethereumjs-wallet');
 var crypto = require('crypto');
 var web3 = require('../ethereum/web3').default;
-var utils = require('../lib/Utils');
+var utils = require('../support/Utils');
 var compiledContract = require('../ethereum/build/CryptoMessenger.json');
 var Tx = require('ethereumjs-tx');
 var Relationship = require('./Relationship');
 var EventHandler = require('./EventHandler').default;
 var LocalStorageManager = require('./LocalStorageManager').default;
-import appDispatcher from '../components/AppDispatcher';
-var Constant = require('../components/Constant');
+import appDispatcher from '../support/AppDispatcher';
+var Constant = require('../support/Constant');
 
 class Account {
     constructor() {

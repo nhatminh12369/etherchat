@@ -6,8 +6,8 @@ import {
     Icon,
     Form
 } from 'semantic-ui-react';
-import appDispatcher from './AppDispatcher';
-import Constant from './Constant';
+import appDispatcher from '../support/AppDispatcher';
+import Constant from '../support/Constant';
 
 class UpdateProfileModal extends Component {
     constructor(props) {

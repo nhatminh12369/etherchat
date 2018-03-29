@@ -1,8 +1,8 @@
 
 var {Relationship} = require('./Relationship');
-var appDispatcher = require('../components/AppDispatcher');
-var Constant = require('../components/Constant');
-var utils = require('../lib/Utils');
+var appDispatcher = require('../support/AppDispatcher');
+var Constant = require('../support/Constant');
+var utils = require('../support/Utils');
 
 class LocalStorageManager {
 

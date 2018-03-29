@@ -1,5 +1,5 @@
 import {Component} from 'react';
-import LocalStorageManager from '../lib/LocalStorageManager';
+import LocalStorageManager from '../support/LocalStorageManager';
 
 class Test extends Component {
     componentDidMount() {

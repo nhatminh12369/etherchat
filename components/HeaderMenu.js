@@ -12,8 +12,8 @@ import {
 } from 'semantic-ui-react';
 import Head from 'next/head';
 import web3 from '../ethereum/web3';
-import Constant from './Constant';
-import appDispatcher from './AppDispatcher';
+import Constant from '../support/Constant';
+import appDispatcher from '../support/AppDispatcher';
 
 class HeaderMenu extends Component {
     constructor(props) {

@@ -1,5 +1,5 @@
 import Web3 from 'web3';
-import Constant from '../components/Constant';
+import Constant from '../support/Constant';
 
 let web3;
 
