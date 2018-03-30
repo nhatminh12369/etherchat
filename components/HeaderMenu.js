@@ -40,10 +40,13 @@ class HeaderMenu extends Component {
                 this.setState({balance: this.account.balance});
             } else if (payload.action == Constant.EVENT.ACCOUNT_INFO_UPDATED) {
                 this.setState({name: this.account.name, avatarUrl: this.account.avatarUrl, isJoined: this.account.isJoined});
-            } else if (payload.action == Constant.EVENT.PENDING_TRANSACTION_UPDATED) {
-                this.setState({numPendingTx: this.account.numPendingTx});
+            } 
+        });
+        this.account.transactionManager.dispatcher.register((payload) => {
+            if (payload.action == Constant.EVENT.PENDING_TRANSACTION_UPDATED) {
+                this.setState({numPendingTx: this.account.transactionManager.numPendingTx});
             }
-        })
+        });
     }
 
     getAccountInfo = () => {

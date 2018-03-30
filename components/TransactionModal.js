@@ -37,7 +37,8 @@ class TransactionModal extends Component {
             action: Constant.ACTION.APPROVE_TRANSACTION,
             transactionId: this.state.transactionId,
             method: this.method,
-            gasPrice: this.state.gasPrice
+            gasPrice: this.state.gasPrice,
+            gasAmount: this.state.estimatedGas
         })
     }
 
@@ -63,7 +64,6 @@ class TransactionModal extends Component {
             estimatedGas = 3000000;
             if (err) {
                 warningMessage = err.message;
-                console.log(warningMessage);
             }
         }
         var gasPrice = await web3.eth.getGasPrice();
@@ -91,7 +91,12 @@ class TransactionModal extends Component {
                     <label>Gas price</label>
                     <Input value={web3.utils.fromWei(this.state.gasPrice, 'gwei')} 
                         label={{basic: true, content: 'Gwei'}} labelPosition='right'
-                        onChange={(e) => this.setState({gasPrice: web3.utils.toWei(e.target.value, 'gwei')})}
+                        onChange={(e) => {
+                                if (e.target.value < 1000000) {
+                                    this.setState({gasPrice: web3.utils.toWei(e.target.value, 'gwei')});
+                                }
+                            }
+                        }
                         style={{textAlign: 'right'}}/>
                     </Form.Field>
                     <Form.Field inline>
@@ -110,6 +115,7 @@ class TransactionModal extends Component {
                 open={this.state.modalOpen}
                 onClose={this.handleClose}
                 size='mini'
+                closeOnDimmerClick={false}
                 >
                 <Header icon="" content='Confirm transaction' />
                     {content}

@@ -97,7 +97,7 @@ class LocalStorageManager {
         var noMatchingItem = true;
         for (var i=localMessages.messages.length-1; i>=0;i--) {
             if (event.transactionHash == localMessages.messages[i].txHash) {
-                localMessages.messages[i].isPending = false;
+                localMessages.messages[i].status = Constant.SENT_STATUS.SUCCESS;
                 window.localStorage.setItem(data.to, JSON.stringify(this.contacts[data.to]));
                 noMatchingItem = false;
             }
@@ -115,10 +115,20 @@ class LocalStorageManager {
 
     addMyLocalMessage = (message, to, encryption, txHash) => {
         var message = {message, encryption, txHash};
-        message.isPending = true;
+        message.status = Constant.SENT_STATUS.PENDING;
         message.isMine = true;
         this.contacts[to].messages.push(message);
         window.localStorage.setItem(to, JSON.stringify(this.contacts[to]));
+    }
+
+    updateLocalMessage = (toAddress, txHash, status) => {
+        var localMessages = this.contacts[toAddress];
+        for (var i=localMessages.messages.length-1; i>=0;i--) {
+            if (txHash == localMessages.messages[i].txHash) {
+                localMessages.messages[i].status = status;
+                window.localStorage.setItem(toAddress, JSON.stringify(this.contacts[toAddress]));
+            }
+        }
     }
 
     setPrivateKey(privateKey) {

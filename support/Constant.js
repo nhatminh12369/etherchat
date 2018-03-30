@@ -17,9 +17,15 @@ module.exports.EVENT = {
     PENDING_TRANSACTION_UPDATED: 'PENDING_TRANSACTION_UPDATED',
     ENCOUNTERED_ERROR: 'ENCOUNTERED_ERROR',
     ON_ERROR: 'onError',
-    ON_SUCCESS: 'onSuccess',
+    ON_RECEIPT: 'onReceipt',
     ON_APPROVED: 'onApproved',
     ON_REJECTED: 'onRejected'
+}
+
+module.exports.SENT_STATUS = {
+    PENDING: 1,
+    SUCCESS: 2,
+    FAILED: 3
 }
 
 module.exports.NETWORK_LIST = [

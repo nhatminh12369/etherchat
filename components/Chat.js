@@ -55,7 +55,7 @@ class Chat extends Component {
     render() {
         const {height} = this.props;
 
-        const { publicKey, messages} = this.state;
+        const { publicKey, messages } = this.state;
 
         var messageItems = [];
         if (publicKey) {
@@ -75,11 +75,21 @@ class Chat extends Component {
                     }
 
                     if (messages[i].isMine) {
-                        if (messages[i].isPending == true) {
+                        if (messages[i].status == Constant.SENT_STATUS.PENDING) {
                             messageItems.push(
                                 <p align='right' key={'msg_' + i}><Label pointing='right' 
                                     as='span' size='large' color='blue' style={{fontWeight: '100', lineHeight: '1.5'}}>
                                     <Icon name='circle notched' loading />
+                                    {decryptedMessage}
+                                    {lastObjectAnchor}
+                                </Label></p>
+                            );
+                        } else if (messages[i].status == Constant.SENT_STATUS.FAILED) {
+                            messageItems.push(
+                                <p align='right' key={'msg_' + i}><Label pointing='right' 
+                                    as='span' key={'msg_' + i} size='large' color='blue' 
+                                    style={{fontWeight: '100', lineHeight: '1.5'}}>
+                                    <Icon name='warning sign'/>
                                     {decryptedMessage}
                                     {lastObjectAnchor}
                                 </Label></p>

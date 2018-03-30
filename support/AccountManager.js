@@ -5,7 +5,6 @@ var crypto = require('crypto');
 var web3 = require('../ethereum/web3').default;
 var utils = require('../support/Utils');
 var compiledContract = require('../ethereum/build/CryptoMessenger.json');
-var Tx = require('ethereumjs-tx');
 var Relationship = require('./Relationship');
 var EventHandler = require('./EventHandler').default;
 var LocalStorageManager = require('./LocalStorageManager').default;
@@ -31,7 +30,7 @@ class AccountManager {
     }
 
     startTransactionManager = () => {
-        this.transactionManager = new TransactionManager();
+        this.transactionManager = new TransactionManager(this);
     }
 
     getContract = async () => {
@@ -158,32 +157,38 @@ class AccountManager {
         var method = this.contract.methods.sendMessage(toAddress, encryptedMessage, utils.getEncryptAlgorithmInHex());
 
         this.transactionManager.executeMethod(method)
-            .on(Constant.EVENT.ON_APPROVED, (data) => {
-                console.log('approved transaction');
+            .on(Constant.EVENT.ON_APPROVED, (txHash) => {
+                this.storageManager.addMyLocalMessage(encryptedMessage, toAddress, utils.getEncryptAlgorithm(), txHash);
+                appDispatcher.dispatch({
+                    action: Constant.EVENT.MESSAGES_UPDATED,
+                    data: toAddress
+                });
             })
             .on(Constant.EVENT.ON_REJECTED, (data) => {
-                console.log('rejected transaction');
+                // do nothing
+            })
+            .on(Constant.EVENT.ON_RECEIPT, (receipt, ) => {
+                this.storageManager.updateLocalMessage(toAddress, receipt.transactionHash, Constant.SENT_STATUS.SUCCESS);
+                appDispatcher.dispatch({
+                    action: Constant.EVENT.MESSAGES_UPDATED,
+                    data: toAddress
+                });
+            })
+            .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
+                this.storageManager.updateLocalMessage(toAddress, txHash, Constant.SENT_STATUS.FAILED);
+                appDispatcher.dispatch({
+                    action: Constant.EVENT.MESSAGES_UPDATED,
+                    data: toAddress
+                });
             });
 
         // var txHash = await this.sendToContractMethod(method);
         // this.storageManager.addMyLocalMessage(encryptedMessage, toAddress, utils.getEncryptAlgorithm(), txHash);
-        // appDispatcher.dispatch({
-        //     action: Constant.EVENT.MESSAGES_UPDATED,
-        //     data: toAddress
-        // })
+        
     }
-
-    // Method, 
 
     sendToContractMethod = (method) => {
         this.transactionManager.executeTransaction(method);
-    }
-
-    updatePendingTx(numPendingTx) {
-        this.numPendingTx = numPendingTx;
-        appDispatcher.dispatch({
-            action: Constant.EVENT.PENDING_TRANSACTION_UPDATED
-        });
     }
 
     getContactList = async () => {
