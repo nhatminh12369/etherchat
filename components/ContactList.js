@@ -22,26 +22,31 @@ var {Relationship} = require('../support/Relationship');
 class ContactList extends Component {
     constructor(props) {
         super(props);
-        this.state = {contactAddresses: undefined, isAccepting: [], selectedAddress: ""};
         this.account = props.account;
+        this.state = {contactAddresses: [], isAccepting: [], selectedAddress: ""};
     }
 
     componentDidMount() {
-        this.getData();
+        this.setState({contactAddresses: this.account.storageManager.contactAddresses});
+        // this.getData();
+
         appDispatcher.register((payload) => {
+            console.log(payload);
             if (payload.action == Constant.EVENT.CONTACT_LIST_UPDATED) {
+                console.log('on contact list update');
+                console.log(this.account.storageManager.contactAddresses);
                 this.setState({contactAddresses: this.account.storageManager.contactAddresses});
             }
         })
     }
 
-    getData = async () => {
-        if (this.account.isReady) {
-            var list = await this.account.getContactList();
-        } else {
-            setTimeout(this.getData, 1000);
-        }
-    }
+    // getData = async () => {
+    //     if (this.account.isReady) {
+    //         var list = await this.account.getContactList();
+    //     } else {
+    //         setTimeout(this.getData, 1000);
+    //     }
+    // }
 
     addContactClicked = () => {
         if (this.account.isJoined) {
@@ -87,13 +92,17 @@ class ContactList extends Component {
 
         var contactItems = [];
 
+        console.log('addresses');
+        console.log(contactAddresses);
+
         if (contactAddresses == undefined) {
-            htmlContent = (
-                <Dimmer active>
-                   <Loader size='large'>Loading</Loader>
-                </Dimmer>
-            )
-        } else if (contactAddresses.length == 0) {
+            htmlContent = (<div></div>);
+            //     <Dimmer active>
+            //        <Loader size='large'>Loading</Loader>
+            //     </Dimmer>
+            // )
+        } else 
+        if (contactAddresses.length == 0) {
             contactItems.push(
                 <List.Item key={'contact_' + i}>
                     <List.Content>
@@ -101,7 +110,7 @@ class ContactList extends Component {
                     </List.Content>
                 </List.Item>
                 );
-            htmlContent = (<List selection animated verticalAlign='middle'>{contactItems}</List>);
+            htmlContent = (<List selection verticalAlign='middle'>{contactItems}</List>);
         } else {
             for (var i=0;i<contactAddresses.length;i++) {
                 var user = this.account.storageManager.contacts[contactAddresses[i]];
@@ -156,9 +165,9 @@ class ContactList extends Component {
                 <Header as='h2' style={{float: 'left'}}>Contact list</Header>
                 <Button color='blue' style={{float: 'right'}} onClick={this.addContactClicked}><Icon name='add user'></Icon>Add</Button>
                 </div>
-                <Dimmer.Dimmable as='div' style={{height: height - 40, overflow: 'auto', float: 'left', width:'100%'}}>
+                <div style={{height: height - 40, overflow: 'auto', float: 'left', width:'100%'}}>
                     {htmlContent}
-                </Dimmer.Dimmable>
+                </div>
                 <AddContactModal account={this.account} />
             </div>
         );

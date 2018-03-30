@@ -36,7 +36,7 @@ class Index extends Component {
         console.log(window.localStorage);
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
-        this.checkForPrivateKey();
+        this.account.loadPrivateKey();
     }
       
     componentWillUnmount() {
@@ -49,20 +49,6 @@ class Index extends Component {
 
     joinIntoContract = () => {
         this.account.joinContract();
-    }
-
-    checkForPrivateKey() {
-        if (typeof(Storage) !== "undefined") {
-            var privateKey = window.localStorage.privateKey;
-            var firstTimeUse = window.localStorage.firstTimeUse;
-            if (firstTimeUse) {
-                if (privateKey == undefined) {
-                    //this.setState({modalOpen: true});
-                } else {
-                    this.account.setPrivateKey(privateKey);
-                }
-            }
-        }
     }
 
     render() {

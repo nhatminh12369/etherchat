@@ -93,6 +93,15 @@ class AccountManager {
         return member;
     }
 
+    loadPrivateKey = () => {
+        var privateKeyHex = this.storageManager.getPrivateKey();
+        if (privateKeyHex) {
+            var privateKeyBuffer = Buffer.from(privateKeyHex, 'hex');
+            this.walletAccount = Wallet.fromPrivateKey(privateKeyBuffer);
+            this.updateBalance();
+        }
+    }
+
     setPrivateKey = (privateKey) => {
         var isValid = false;
         try {
@@ -181,10 +190,6 @@ class AccountManager {
                     data: toAddress
                 });
             });
-
-        // var txHash = await this.sendToContractMethod(method);
-        // this.storageManager.addMyLocalMessage(encryptedMessage, toAddress, utils.getEncryptAlgorithm(), txHash);
-        
     }
 
     sendToContractMethod = (method) => {

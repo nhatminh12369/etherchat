@@ -7,6 +7,7 @@ var utils = require('../support/Utils');
 class LocalStorageManager {
 
     initialize() {
+        console.log('initialize local storage');
         this.contacts = {};
         this.loadLocalContactAddresses();
         this.loadContactMessages();
@@ -135,6 +136,12 @@ class LocalStorageManager {
         window.localStorage.setItem("privateKey", privateKey);
         window.localStorage.setItem("currentDataBlock", "0");
         window.localStorage.setItem("ethNetwork", "4");
+    }
+
+    getPrivateKey() {
+        if (typeof(Storage) !== 'undefined') {
+            return window.localStorage.privateKey;
+        }
     }
 
     setBalance(balance) {

@@ -74,6 +74,7 @@ class Chat extends Component {
                         lastObjectAnchor = (<span ref={lastObjectAnchor => { this.lastObjectAnchor = lastObjectAnchor; }} />);
                     }
 
+                    var explorerUrl = Constant.ENV.ExplorerUrl + 'tx/' + messages[i].txHash;
                     if (messages[i].isMine) {
                         if (messages[i].status == Constant.SENT_STATUS.PENDING) {
                             messageItems.push(
@@ -96,21 +97,24 @@ class Chat extends Component {
                             );
                         } else {
                             messageItems.push(
-                                <p align='right' key={'msg_' + i}><Label pointing='right' 
-                                    as='span' key={'msg_' + i} size='large' color='blue' 
-                                    style={{fontWeight: '100', lineHeight: '1.5'}}>
-                                    {decryptedMessage}
-                                    {lastObjectAnchor}
-                                </Label></p>
+                                <p align='right' key={'msg_' + i}>
+                                    <a href={explorerUrl} target='_blank'><Label pointing='right' 
+                                        as='span' key={'msg_' + i} size='large' color='blue' 
+                                        style={{fontWeight: '100', lineHeight: '1.5'}}>
+                                        {decryptedMessage}
+                                        {lastObjectAnchor}
+                                </Label></a></p>
                             );
                         }
                     } else {
                         messageItems.push(
-                            <p key={'msg_' + i}><Label pointing='left' as='span' 
-                                key={'msg_' + i} size='large' style={{fontWeight: '100', lineHeight: '1.5'}}>
-                                {decryptedMessage}
-                                {lastObjectAnchor}
-                            </Label></p>
+                            <p key={'msg_' + i}>
+                                <a href={explorerUrl} target='_blank'>
+                                    <Label pointing='left' as='span' 
+                                    key={'msg_' + i} size='large' style={{fontWeight: '100', lineHeight: '1.5'}}>
+                                    {decryptedMessage}
+                                    {lastObjectAnchor}
+                            </Label></a></p>
                         );
                     }
                 }
