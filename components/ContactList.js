@@ -31,10 +31,7 @@ class ContactList extends Component {
         // this.getData();
 
         appDispatcher.register((payload) => {
-            console.log(payload);
             if (payload.action == Constant.EVENT.CONTACT_LIST_UPDATED) {
-                console.log('on contact list update');
-                console.log(this.account.storageManager.contactAddresses);
                 this.setState({contactAddresses: this.account.storageManager.contactAddresses});
             }
         })
@@ -91,9 +88,6 @@ class ContactList extends Component {
         var htmlContent;
 
         var contactItems = [];
-
-        console.log('addresses');
-        console.log(contactAddresses);
 
         if (contactAddresses == undefined) {
             htmlContent = (<div></div>);

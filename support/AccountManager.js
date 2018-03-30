@@ -134,29 +134,68 @@ class AccountManager {
         return a.computeSecret(publicKey);
     }
 
-    joinContract = () => {
+    joinContract = (callback) => {
         var publicKey = this.walletAccount.getPublicKey();
         var publicKeyLeft = '0x' + publicKey.toString('hex', 0, 32);
         var publicKeyRight = '0x' + publicKey.toString('hex', 32, 64);
 
-        this.transactionManager.executeMethod(this.contract.methods.join(publicKeyLeft, publicKeyRight));
+        this.transactionManager.executeMethod(this.contract.methods.join(publicKeyLeft, publicKeyRight))
+            .on(Constant.EVENT.ON_APPROVED, (txHash) => {
+                callback(Constant.EVENT.ON_APPROVED);
+            })
+            .on(Constant.EVENT.ON_REJECTED, (txHash) => {
+                callback(Constant.EVENT.ON_REJECTED);
+            })
+            .on(Constant.EVENT.ON_RECEIPT, (receipt) => {
+                callback(Constant.EVENT.ON_RECEIPT);
+            })
+            .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
+                callback(Constant.EVENT.ON_ERROR);
+            });
     }
 
-    addContact = (address) => {
+    addContact = (address, callback) => {
         var method = this.contract.methods.addContact(address);
-        this.sendToContractMethod(method);
+        this.transactionManager.executeMethod(method)
+            .on(Constant.EVENT.ON_APPROVED, (txHash) => {
+                callback(Constant.EVENT.ON_APPROVED);
+            })
+            .on(Constant.EVENT.ON_RECEIPT, (receipt) => {
+                callback(Constant.EVENT.ON_RECEIPT);
+            })
+            .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
+                callback(Constant.EVENT.ON_ERROR);
+            });
     }
 
-    acceptContactRequest = (address) => {
+    acceptContactRequest = (address, callback) => {
         var method = this.contract.methods.acceptContactRequest(address);
-        this.sendToContractMethod(method);
+        this.transactionManager.executeMethod(method)
+            .on(Constant.EVENT.ON_APPROVED, (txHash) => {
+                callback(Constant.EVENT.ON_APPROVED);
+            })
+            .on(Constant.EVENT.ON_RECEIPT, (receipt) => {
+                callback(Constant.EVENT.ON_RECEIPT);
+            })
+            .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
+                callback(Constant.EVENT.ON_ERROR);
+            });
     }
 
     updateProfile = (name, avatarUrl) => {
         var nameHex = '0x' + Buffer.from(name, 'ascii').toString('hex');
         var avatarUrlHex = '0x' + Buffer.from(avatarUrl, 'ascii').toString('hex');
         var method = this.contract.methods.updateProfile(nameHex, avatarUrlHex);
-        this.sendToContractMethod(method);
+        this.transactionManager.executeMethod(method)
+            .on(Constant.EVENT.ON_APPROVED, (txHash) => {
+                callback(Constant.EVENT.ON_APPROVED);
+            })
+            .on(Constant.EVENT.ON_RECEIPT, (receipt) => {
+                callback(Constant.EVENT.ON_RECEIPT);
+            })
+            .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
+                callback(Constant.EVENT.ON_ERROR);
+            });
     }
 
     sendMessage = async (toAddress, message) => {

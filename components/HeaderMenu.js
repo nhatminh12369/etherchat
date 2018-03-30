@@ -30,7 +30,13 @@ class HeaderMenu extends Component {
     }
 
     joinContract = () => {
-        this.account.joinContract();
+        this.account.joinContract((resultEvent) => {
+            if (resultEvent == Constant.EVENT.ON_REJECTED || resultEvent == Constant.EVENT.ON_ERROR) {
+                this.setState({isJoinButtonLoading: false});
+            } else if (resultEvent == Constant.EVENT.ON_RECEIPT) {
+                window.location.reload();
+            }
+        })
     }
 
     componentDidMount() {

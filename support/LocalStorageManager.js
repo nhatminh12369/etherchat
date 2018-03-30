@@ -7,7 +7,6 @@ var utils = require('../support/Utils');
 class LocalStorageManager {
 
     initialize() {
-        console.log('initialize local storage');
         this.contacts = {};
         this.loadLocalContactAddresses();
         this.loadContactMessages();
