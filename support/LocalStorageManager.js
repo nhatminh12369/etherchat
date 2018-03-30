@@ -43,11 +43,17 @@ class LocalStorageManager {
 
             this.contactAddresses.push(address);
             window.localStorage.setItem('contactAddresses', JSON.stringify(this.contactAddresses));
-        } else if (relationship == Relationship.Blocked || relationship == Relationship.Connected) {
-            data.relationship = relationship;
+        } else {
+            if (data.relationship < relationship) {
+                data.relationship = relationship;
+            }
             data.publicKey = publicKey;
-            data.name = name;
-            data.avatarUrl = avatarUrl;
+            if (name) {
+                data.name = name;
+            }
+            if (avatarUrl) {
+                data.avatarUrl = avatarUrl;
+            }
             window.localStorage.setItem(address, JSON.stringify(data));
         }
     }

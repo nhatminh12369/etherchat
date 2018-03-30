@@ -30,6 +30,13 @@ class EventHandler {
             });
             this.storageManager.addInvitationEvents(invitationEvents);
 
+            for (var i=0;i<myRequestEvents.length;i++) {
+                await this.getMemberInfo(myRequestEvents[i].returnValues.to, Relationship.NoRelation);
+            }
+            for (var i=0;i<invitationEvents.length;i++) {
+                await this.getMemberInfo(invitationEvents[i].returnValues.from, Relationship.Requested);
+            }
+
             if (myRequestEvents.length > 0 || invitationEvents.length > 0) {
                 appDispatcher.dispatch({
                     action: Constant.EVENT.CONTACT_LIST_UPDATED
@@ -49,13 +56,6 @@ class EventHandler {
                 toBlock: currentBlockNumber
             });
             this.storageManager.addAcceptContactEvents(acceptContactEvents);
-
-            for (var i=0;i<myAcceptContactEvents.length;i++) {
-                await this.getMemberInfo(myAcceptContactEvents[i].returnValues.to, Relationship.Connected);
-            }
-            for (var i=0;i<acceptContactEvents.length;i++) {
-                await this.getMemberInfo(acceptContactEvents[i].returnValues.from, Relationship.Connected);
-            }
 
             if (myRequestEvents.length > 0 || invitationEvents.length > 0 ||
                 myAcceptContactEvents.length > 0 || acceptContactEvents.length > 0) {

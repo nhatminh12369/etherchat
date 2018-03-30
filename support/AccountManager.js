@@ -53,7 +53,7 @@ class AccountManager {
             this.eventHandler = new EventHandler(address, this.contract, this.storageManager);
             this.eventHandler.start();
             await this.getProfile();
-            await this.getContactList();
+            // await this.getContactList();
         }
     }
 
@@ -81,17 +81,17 @@ class AccountManager {
     }
 
     getContactList = async () => {
-        var result = await this.callToContractMethod(this.contract.methods.getContactList());
+        // var result = await this.callToContractMethod(this.contract.methods.getContactList());
     }
 
-    convertToMemberInfo = (hexData) => {
-        var member = {};
-        member.publicKey = hexData.substr(2, 128);
-        member.name = Buffer.from(hexData.substr(130, 64), 'hex').toString('ascii');
-        member.avatarUrl = Buffer.from(hexData.substr(194, 64), 'hex').toString('ascii');
-        member.isMember = parseInt(hexData.substr(194+128, 64), 'hex');
-        return member;
-    }
+    // convertToMemberInfo = (hexData) => {
+    //     var member = {};
+    //     member.publicKey = hexData.substr(2, 128);
+    //     member.name = Buffer.from(hexData.substr(130, 64), 'hex').toString('ascii');
+    //     member.avatarUrl = Buffer.from(hexData.substr(194, 64), 'hex').toString('ascii');
+    //     member.isMember = parseInt(hexData.substr(194+128, 64), 'hex');
+    //     return member;
+    // }
 
     loadPrivateKey = () => {
         var privateKeyHex = this.storageManager.getPrivateKey();
@@ -141,16 +141,16 @@ class AccountManager {
 
         this.transactionManager.executeMethod(this.contract.methods.join(publicKeyLeft, publicKeyRight))
             .on(Constant.EVENT.ON_APPROVED, (txHash) => {
-                callback(Constant.EVENT.ON_APPROVED);
+                if (callback) callback(Constant.EVENT.ON_APPROVED);
             })
             .on(Constant.EVENT.ON_REJECTED, (txHash) => {
-                callback(Constant.EVENT.ON_REJECTED);
+                if (callback) callback(Constant.EVENT.ON_REJECTED);
             })
             .on(Constant.EVENT.ON_RECEIPT, (receipt) => {
-                callback(Constant.EVENT.ON_RECEIPT);
+                if (callback) callback(Constant.EVENT.ON_RECEIPT);
             })
             .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
-                callback(Constant.EVENT.ON_ERROR);
+                if (callback) callback(Constant.EVENT.ON_ERROR);
             });
     }
 
@@ -158,13 +158,13 @@ class AccountManager {
         var method = this.contract.methods.addContact(address);
         this.transactionManager.executeMethod(method)
             .on(Constant.EVENT.ON_APPROVED, (txHash) => {
-                callback(Constant.EVENT.ON_APPROVED);
+                if (callback) callback(Constant.EVENT.ON_APPROVED);
             })
             .on(Constant.EVENT.ON_RECEIPT, (receipt) => {
-                callback(Constant.EVENT.ON_RECEIPT);
+                if (callback) callback(Constant.EVENT.ON_RECEIPT);
             })
             .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
-                callback(Constant.EVENT.ON_ERROR);
+                if (callback) callback(Constant.EVENT.ON_ERROR);
             });
     }
 
@@ -172,13 +172,13 @@ class AccountManager {
         var method = this.contract.methods.acceptContactRequest(address);
         this.transactionManager.executeMethod(method)
             .on(Constant.EVENT.ON_APPROVED, (txHash) => {
-                callback(Constant.EVENT.ON_APPROVED);
+                if (callback) callback(Constant.EVENT.ON_APPROVED);
             })
             .on(Constant.EVENT.ON_RECEIPT, (receipt) => {
-                callback(Constant.EVENT.ON_RECEIPT);
+                if (callback) callback(Constant.EVENT.ON_RECEIPT);
             })
             .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
-                callback(Constant.EVENT.ON_ERROR);
+                if (callback) callback(Constant.EVENT.ON_ERROR);
             });
     }
 
@@ -188,13 +188,13 @@ class AccountManager {
         var method = this.contract.methods.updateProfile(nameHex, avatarUrlHex);
         this.transactionManager.executeMethod(method)
             .on(Constant.EVENT.ON_APPROVED, (txHash) => {
-                callback(Constant.EVENT.ON_APPROVED);
+                if (callback) callback(Constant.EVENT.ON_APPROVED);
             })
             .on(Constant.EVENT.ON_RECEIPT, (receipt) => {
-                callback(Constant.EVENT.ON_RECEIPT);
+                if (callback) callback(Constant.EVENT.ON_RECEIPT);
             })
             .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
-                callback(Constant.EVENT.ON_ERROR);
+                if (callback) callback(Constant.EVENT.ON_ERROR);
             });
     }
 
@@ -229,18 +229,6 @@ class AccountManager {
                     data: toAddress
                 });
             });
-    }
-
-    sendToContractMethod = (method) => {
-        this.transactionManager.executeTransaction(method);
-    }
-
-    getContactList = async () => {
-        
-    }
-
-    getPendingInvitation = async () => {
-
     }
 }
 

@@ -40,7 +40,7 @@ class AddContactModal extends Component {
             this.account.addContact(this.state.address);
             this.setState({errorMessage: "", modalOpen: false});
         } else {
-            this.setState({errorMessage: "Invalid ethereum address", modalOpen: false});
+            this.setState({errorMessage: "Invalid ethereum address"});
         }
     }
 

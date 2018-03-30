@@ -61,9 +61,22 @@ class ContactList extends Component {
     acceptContactRequest = (event) => {
         if (this.account.isJoined) {
             var address = event.target.value;
+            
             this.account.storageManager.contacts[address].isAccepting = true;
-            this.account.acceptContactRequest(address);
             this.forceUpdate();
+
+            this.account.acceptContactRequest(address, (resultEvent) => {
+                if (resultEvent == Constant.EVENT.ON_REJECTED) {
+                    this.account.storageManager.contacts[address].isAccepting = false;
+                    this.forceUpdate();
+                } else if (resultEvent == Constant.EVENT.ON_ERROR) {
+                    this.account.storageManager.contacts[address].isAccepting = false;
+                    this.forceUpdate();
+                } else if (resultEvent == Constant.EVENT.ON_RECEIPT) {
+                    this.account.storageManager.contacts[address].isAccepting = false;
+                    this.setState({contactAddresses: this.account.storageManager.contactAddresses});
+                }
+            });
         } else {
             appDispatcher.dispatch({
                 action: Constant.EVENT.ENCOUNTERED_ERROR,
@@ -109,7 +122,7 @@ class ContactList extends Component {
             for (var i=0;i<contactAddresses.length;i++) {
                 var user = this.account.storageManager.contacts[contactAddresses[i]];
                 var addressExplorerUrl = Constant.ENV.ExplorerUrl + 'address/' + contactAddresses[i];
-                var rightAlignedContent = (<div></div>);
+                var rightAlignedContent;
                 if (user.relationship == Relationship.NoRelation) {
                     rightAlignedContent = (
                         <List.Content floated='right'>
@@ -134,6 +147,15 @@ class ContactList extends Component {
                             />
                         </List.Content>
                     );
+                } else {
+                    rightAlignedContent = (
+                        <List.Content floated='right'>
+                            <Popup  key={'info_button_popup_' + i}
+                                    trigger={<Button color='green' as='a' href={addressExplorerUrl} target='_blank' circular icon='info circle'></Button>}
+                                    content='View on Etherscan'
+                            />
+                        </List.Content>
+                    )
                 }
 
                 var address = contactAddresses[i];
