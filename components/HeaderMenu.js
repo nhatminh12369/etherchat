@@ -29,16 +29,6 @@ class HeaderMenu extends Component {
         window.localStorage.clear();
     }
 
-    joinContract = () => {
-        this.account.joinContract((resultEvent) => {
-            if (resultEvent == Constant.EVENT.ON_REJECTED || resultEvent == Constant.EVENT.ON_ERROR) {
-                this.setState({isJoinButtonLoading: false});
-            } else if (resultEvent == Constant.EVENT.ON_RECEIPT) {
-                window.location.reload();
-            }
-        })
-    }
-
     componentDidMount() {
         this.getAccountInfo();
         appDispatcher.register((payload) => {
@@ -96,7 +86,13 @@ class HeaderMenu extends Component {
     }
 
     handleJoinClicked = () => {
-        this.account.joinContract();
+        this.account.joinContract((resultEvent) => {
+            if (resultEvent == Constant.EVENT.ON_REJECTED || resultEvent == Constant.EVENT.ON_ERROR) {
+                this.setState({isJoinButtonLoading: false});
+            } else if (resultEvent == Constant.EVENT.ON_RECEIPT) {
+                window.location.reload();
+            }
+        });
         this.setState({isJoinButtonLoading: true});
     }
 

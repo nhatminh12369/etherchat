@@ -112,14 +112,14 @@ class ContactList extends Component {
                 var rightAlignedContent = (<div></div>);
                 if (user.relationship == Relationship.NoRelation) {
                     rightAlignedContent = (
-                        <div>
-                            <Button color='orange' floated='right' loading={user.isAccepting} disabled={user.isAccepting} 
+                        <List.Content floated='right'>
+                            <Button color='orange' loading={user.isAccepting} disabled={user.isAccepting} 
                                 onClick={this.acceptContactRequest} value={contactAddresses[i]}>Accept</Button>
                             <Popup  key={'info_button_popup_' + i}
                                     trigger={<Button color='green' as='a' href={addressExplorerUrl} target='_blank' circular icon='info circle'></Button>}
                                     content='View on Etherscan'
                             />
-                        </div>
+                        </List.Content>
                     );
                 } else if (user.relationship == Relationship.Requested) {
                     rightAlignedContent = (
