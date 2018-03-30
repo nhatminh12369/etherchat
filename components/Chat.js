@@ -39,8 +39,8 @@ class Chat extends Component {
                 this.setState({address: payload.data, 
                     publicKey: this.account.storageManager.contacts[payload.data].publicKey,
                     messages: this.account.storageManager.contacts[payload.data].messages});
-            }
-            if (this.state.address != "" && payload.action == Constant.EVENT.MESSAGES_UPDATED) {
+                
+            } else if (this.state.address != "" && payload.action == Constant.EVENT.MESSAGES_UPDATED) {
                 if (payload.data == undefined || payload.data == this.state.address) {
                     this.setState({messages: this.account.storageManager.contacts[this.state.address].messages})
                 }

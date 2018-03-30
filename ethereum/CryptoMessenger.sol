@@ -4,6 +4,9 @@ contract CryptoMessenger {
     event messageSentEvent(address indexed from, address indexed to, bytes message, bytes32 encryption);
     event addContactEvent(address indexed from, address indexed to);
     event acceptContactEvent(address indexed from, address indexed to);
+    event profileUpdateEvent(address indexed from, bytes32 name, bytes32 avatarUrl);
+    event blockContactEvent(address indexed from, address indexed to);
+    event unblockContactEvent(address indexed from, address indexed to);
     
     enum RelationshipType {NoRelation, Requested, Connected, Blocked}
     
@@ -16,12 +19,10 @@ contract CryptoMessenger {
         bool isMember;
     }
     
-    mapping (address => address[]) contactLists;
     mapping (address => mapping (address => RelationshipType)) relationships;
     mapping (address => Member) public members;
     
     // TRANSACTIONAL METHODS
-
     function addContact(address addr) public onlyMember {
         require(relationships[msg.sender][addr] == RelationshipType.NoRelation);
         
@@ -34,8 +35,6 @@ contract CryptoMessenger {
         
         relationships[msg.sender][addr] = RelationshipType.Connected;
         relationships[addr][msg.sender] = RelationshipType.Connected;
-        contactLists[msg.sender].push(addr);
-        contactLists[addr].push(msg.sender);
 
         emit acceptContactEvent(msg.sender, addr);
     }
@@ -64,17 +63,20 @@ contract CryptoMessenger {
         require(relationships[msg.sender][from] == RelationshipType.Connected);
 
         relationships[msg.sender][from] = RelationshipType.Blocked;
+        emit blockContactEvent(msg.sender, from);
     }
     
     function unblockMessagesFrom(address from) public onlyMember {
         require(relationships[msg.sender][from] == RelationshipType.Blocked);
 
         relationships[msg.sender][from] = RelationshipType.Connected;
+        emit unblockContactEvent(msg.sender, from);
     }
     
     function updateProfile(bytes32 name, bytes32 avatarUrl) public onlyMember {
         members[msg.sender].name = name;
         members[msg.sender].avatarUrl = avatarUrl;
+        emit profileUpdateEvent(msg.sender, name, avatarUrl);
     }
     
     modifier onlyMember() {
@@ -83,29 +85,6 @@ contract CryptoMessenger {
     }
     
     // CALL METHODS
-    function getContactList() public view onlyMember
-        returns (address[] addresses, bytes32[] names, bytes32[] avatarUrls, 
-        bytes32[] pubkeyLefts, bytes32[] pubkeyRights, uint[] msgStartBlocks) {
-        
-        addresses = contactLists[msg.sender];
-        uint count = addresses.length;
-
-        names = new bytes32[](count);
-        avatarUrls = new bytes32[](count);
-        pubkeyLefts = new bytes32[](count);
-        pubkeyRights = new bytes32[](count);
-        msgStartBlocks = new uint[](count);
-
-        for (uint i = 0; i<count; i++) {
-            Member storage member = members[addresses[i]];
-            names[i] = member.name;
-            avatarUrls[i] = member.avatarUrl;
-            pubkeyLefts[i] = member.publicKeyLeft;
-            pubkeyRights[i] = member.publicKeyRight;
-            msgStartBlocks[i] = member.messageStartBlock;
-        }
-    }
-    
     function getRelationWith(address a) public view onlyMember returns (RelationshipType) {
         return relationships[msg.sender][a];
     }

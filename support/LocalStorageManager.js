@@ -32,7 +32,7 @@ class LocalStorageManager {
         }
     }
 
-    addContact = (address, publicKey, name, avatarUrl, relationship) => {
+    addContact = (address, relationship) => {
         var data = this.contacts[address];
         if (data == undefined) {
             var member = {};
@@ -43,11 +43,18 @@ class LocalStorageManager {
 
             this.contactAddresses.push(address);
             window.localStorage.setItem('contactAddresses', JSON.stringify(this.contactAddresses));
-        } else {
+        }
+    }
+
+    updateContact = (address, publicKey, name, avatarUrl, relationship) => {
+        var data = this.contacts[address];
+        if (data != undefined) {
             if (data.relationship < relationship) {
                 data.relationship = relationship;
             }
-            data.publicKey = publicKey;
+            if (publicKey) {
+                data.publicKey = publicKey;
+            }
             if (name) {
                 data.name = name;
             }
@@ -60,19 +67,19 @@ class LocalStorageManager {
 
     addInvitationEvents = (events) => {
         for (var i=0;i<events.length;i++) {
-            this.addContact(events[i].returnValues["from"], "", "", "", Relationship.NoRelation);
+            this.addContact(events[i].returnValues["from"], Relationship.NoRelation);
         }
     }
 
     addRequestEvents = (events) => {
         for (var i=0;i<events.length;i++) {
-            this.addContact(events[i].returnValues["to"], "", "", "", Relationship.Requested);
+            this.addContact(events[i].returnValues["to"], Relationship.Requested);
         }
     }
 
     addMyAcceptContactEvents = (events) => {
         for (var i=0;i<events.length;i++) {
-            this.addContact(events[i].returnValues["to"], "", "", "", Relationship.Connected);
+            this.updateContact(events[i].returnValues["to"], "", "", "", Relationship.Connected);
         }
     }
 

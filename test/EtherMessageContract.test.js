@@ -105,33 +105,6 @@ describe('Joining and adding contacts', () => {
         });
         assert.equal(2, relationship);
     });
-
-    it('test contact list', async () => {
-        await accountJoin(0);
-        await accountJoin(1);
-        await accountJoin(2);
-        await accountJoin(3);
-
-        await addContact(0, 1);
-        await addContact(1, 0);
-        await addContact(0, 2);
-        await addContact(0, 3);
-
-        await acceptContactRequest(1, 0);
-        await acceptContactRequest(2, 0);
-        await acceptContactRequest(3, 0);
-
-        var contactList0 = await contract.methods.getContactList().call({
-            from: accounts[0]
-        });
-        assert.equal(contactList0['addresses'].length, 3);
-        assert.equal(contactList0['addresses'][2], accounts[3]);
-
-        var contactList1 = await contract.methods.getContactList().call({
-            from: accounts[1]
-        });
-        assert.equal(contactList1['addresses'][0], accounts[0]);
-    });
 });
 
 describe('Sending message', () => {

@@ -121,20 +121,8 @@ class EventHandler {
             var publicKey = '04' + memberInfo.publicKeyLeft.substr(2) + memberInfo.publicKeyRight.substr(2);
             var name = utils.hexStringToAsciiString(memberInfo.name);
             var avatarUrl = utils.hexStringToAsciiString(memberInfo.avatarUrl);
-            this.storageManager.addContact(address, publicKey, name, avatarUrl, relationship);
+            this.storageManager.updateContact(address, publicKey, name, avatarUrl, relationship);
         }
-    }
-
-    testStorage = () => {
-        var data = [];
-        for (var i=0;i<10000;i++) {
-            var item = {}
-            item.name = "long long name";
-            item.publicKey = "adsfkjalsdjfladsjf alksdfjalsdjflajsdfldajsf alsdfj aldsf";
-            item.number = 10000000000000000;
-            data.push(item);
-        }
-        window.localStorage.setItem("testData", JSON.stringify(data));
     }
 }
 
