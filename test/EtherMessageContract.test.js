@@ -38,7 +38,7 @@ describe('Joining and adding contacts', () => {
         assert.equal(publicKey.toString('hex'), returnedPublicKeyStr);
     });
 
-    it('add contact without joining', async () => {
+    it('should not be able to add contact without joining', async () => {
         var hasError = false;
         try {
             await addContact(0, 1);
@@ -65,7 +65,7 @@ describe('Joining and adding contacts', () => {
         assert.equal(0, relationshipWithAccount2);
     });
 
-    it('confirm contact request failed if there is no request', async () => {
+    it('should not be able to accept contact if there is no request', async () => {
         accountJoin(0);
         var hasError = false;
         try {
@@ -108,7 +108,7 @@ describe('Joining and adding contacts', () => {
 });
 
 describe('Sending message', () => {
-    it('Can send raw messages', async () => {
+    it('can send raw messages', async () => {
         await accountJoin(0);
         await accountJoin(1);
         await addContact(0,1);
@@ -176,7 +176,7 @@ describe('Sending message', () => {
         await acceptContactRequest(1, 0);
     });
 
-    it('Encrypt decrypt message', () => {
+    it('Encrypt/decrypt messages', () => {
         var pubkeyUser0 = '04' + utils.privateToPublic(testAccounts[0].secretKey).toString('hex');
         var pubkeyUser1 = '04' + utils.privateToPublic(testAccounts[1].secretKey).toString('hex');
         var secret0 = utils.computeSecret(testAccounts[0].secretKey, Buffer.from(pubkeyUser1, 'hex'));
@@ -240,6 +240,43 @@ describe('Sending message', () => {
             var decryptedMessage = utils.decrypt(Buffer.from(returnedMessage.substr(2), 'hex'), secret1);
             assert.equal(messages[i], decryptedMessage.toString('ascii'));
         }
+    });
+});
+
+describe('Update profile', () => {
+    it('Can update profile', async () => {
+        await accountJoin(0);
+
+        var name = 'Minh NguyeN';
+        var avatarUrl = 'https://gOOgle.com';
+        await contract.methods.updateProfile(stringToHex(name), stringToHex(avatarUrl)).send({
+            from: accounts[0],
+            gas: 3000000
+        });
+
+        var profile = await contract.methods.members(accounts[0]).call();
+        assert.equal(name, hexToString(profile.name));
+        assert.equal(avatarUrl, hexToString(profile.avatarUrl));
+    });
+
+    it('Received event after updating profile', async () => {
+        await accountJoin(0);
+
+        var name = 'Minh NguyeN';
+        var avatarUrl = 'https://gOOgle.com';
+        await contract.methods.updateProfile(stringToHex(name), stringToHex(avatarUrl)).send({
+            from: accounts[0],
+            gas: 3000000
+        });
+
+        var events = await contract.getPastEvents('profileUpdateEvent',{
+            filter: {},
+            fromBlock: 0
+        });
+        var eventData = events[0].returnValues;
+        assert.equal(accounts[0], eventData.from);
+        assert.equal(name, hexToString(eventData.name));
+        assert.equal(avatarUrl, hexToString(eventData.avatarUrl));
     });
 });
 
@@ -350,9 +387,11 @@ stringToHex = (text) => {
     return '0x' + Buffer.from(text, 'ascii').toString('hex');
 }
 
-hexToString = (hexText) => {
-    hexText = hexText.substr(2);
-    return Buffer.from(hexText, 'hex').toString('ascii');
+hexToString = (hexString) => {
+    if (hexString.startsWith('0x')) {
+        hexString = hexString.substr(2);
+    }
+    return Buffer.from(hexString, 'hex').toString('ascii').replace(/\0/g, '');
 }
 
 accountJoin = async (accountIndex) => {
