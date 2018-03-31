@@ -31,19 +31,21 @@ class HeaderMenu extends Component {
     }
 
     componentDidMount() {
-        this.getAccountInfo();
-        appDispatcher.register((payload) => {
-            if (payload.action == Constant.EVENT.ACCOUNT_BALANCE_UPDATED) {
-                this.setState({balance: this.account.balance});
-            } else if (payload.action == Constant.EVENT.ACCOUNT_INFO_UPDATED) {
-                this.setState({name: this.account.name, avatarUrl: this.account.avatarUrl, isJoined: this.account.isJoined});
-            } 
-        });
-        this.account.transactionManager.dispatcher.register((payload) => {
-            if (payload.action == Constant.EVENT.PENDING_TRANSACTION_UPDATED) {
-                this.setState({numPendingTx: this.account.transactionManager.numPendingTx});
-            }
-        });
+        if (this.account) {
+            this.getAccountInfo();
+            appDispatcher.register((payload) => {
+                if (payload.action == Constant.EVENT.ACCOUNT_BALANCE_UPDATED) {
+                    this.setState({balance: this.account.balance});
+                } else if (payload.action == Constant.EVENT.ACCOUNT_INFO_UPDATED) {
+                    this.setState({name: this.account.name, avatarUrl: this.account.avatarUrl, isJoined: this.account.isJoined});
+                } 
+            });
+            this.account.transactionManager.dispatcher.register((payload) => {
+                if (payload.action == Constant.EVENT.PENDING_TRANSACTION_UPDATED) {
+                    this.setState({numPendingTx: this.account.transactionManager.numPendingTx});
+                }
+            });
+        }
     }
 
     getAccountInfo = () => {
@@ -104,102 +106,106 @@ class HeaderMenu extends Component {
     }
 
     render() {
-        var accountInfo = (<Loader inverted active />);
+        var accountInfo = (<div></div>);
 
-        if (this.state.isLoading == false) {
-            if (this.state.address) {
-                var addressExplorerUrl = Config.ENV.ExplorerUrl + 'address/' + this.state.address;
-                var dropdownTrigger;
+        if (this.account) {
+            if (this.state.isLoading == false) {
+                if (this.state.address) {
+                    var addressExplorerUrl = Config.ENV.ExplorerUrl + 'address/' + this.state.address;
+                    var dropdownTrigger;
 
-                if (this.state.avatarUrl) { 
-                    dropdownTrigger = (
-                        <span><Image src={this.state.avatarUrl} avatar/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
-                    );
-                } else {
-                    dropdownTrigger = (
-                        <span><Icon name='user' size='large'/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
-                    );
-                }
+                    if (this.state.avatarUrl) { 
+                        dropdownTrigger = (
+                            <span><Image src={this.state.avatarUrl} avatar/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
+                        );
+                    } else {
+                        dropdownTrigger = (
+                            <span><Icon name='user' size='large'/>{ this.state.name ? this.state.name : this.state.address.substr(0,10)}</span>
+                        );
+                    }
 
-                var networkItems = [];
-                for (var i=0;i<Config.NETWORK_LIST.length;i++) {
-                    networkItems.push(
-                        <Dropdown.Item key={'networkItem' + i} networkid={Config.NETWORK_LIST[i].id} name='changeEthNetwork' onClick={this.handleDropdownClicked}>
-                            {Config.NETWORK_LIST[i].name}
-                        </Dropdown.Item>
-                    );
-                }
+                    var networkItems = [];
+                    for (var i=0;i<Config.NETWORK_LIST.length;i++) {
+                        networkItems.push(
+                            <Dropdown.Item key={'networkItem' + i} networkid={Config.NETWORK_LIST[i].id} name='changeEthNetwork' onClick={this.handleDropdownClicked}>
+                                {Config.NETWORK_LIST[i].name}
+                            </Dropdown.Item>
+                        );
+                    }
 
-                var memberInfo;
-                if (this.account.isJoined) {
-                    memberInfo = (
-                        <Dropdown item trigger={dropdownTrigger}>
-                            <Dropdown.Menu>
-                                <Dropdown.Item name='updateProfile' onClick={this.handleDropdownClicked}>
-                                    <Icon name='write'/>Update profile
-                                </Dropdown.Item>
-                                <Dropdown.Item name='settingsItem' onClick={this.handleDropdownClicked}>
-                                    <Icon name='settings'/>Settings
-                                </Dropdown.Item>
-                                <Dropdown.Item name='logOutItem' onClick={this.handleDropdownClicked}>
-                                    <Icon name='log out'/>Log out
-                                </Dropdown.Item>
-                            </Dropdown.Menu>
-                        </Dropdown>
-                    );
-                } else {
-                    memberInfo = (
-                        <Button color='orange' onClick={this.handleJoinClicked} 
-                            loading={this.state.isJoinButtonLoading} 
-                            disabled={this.state.isJoinButtonLoading}>Join CryptoMessenger</Button>
-                    );
-                }
-
-                var pendingTxItem;
-                if (this.state.numPendingTx > 0) {
-                    pendingTxItem = (
-                        <Label as='a' color='yellow' href={addressExplorerUrl} target='_blank'>
-                            <Icon name='spinner' loading/>
-                            {this.state.numPendingTx} pending tx
-                        </Label>
-                    );
-                }
-
-                accountInfo = (
-                    <Menu.Menu position='right'>
-                        <Menu.Item>
-                        <Dropdown item text={Config.ENV.NetworkName}>
+                    var memberInfo;
+                    if (this.account.isJoined) {
+                        memberInfo = (
+                            <Dropdown item trigger={dropdownTrigger}>
                                 <Dropdown.Menu>
-                                    {networkItems}
+                                    <Dropdown.Item name='updateProfile' onClick={this.handleDropdownClicked}>
+                                        <Icon name='write'/>Update profile
+                                    </Dropdown.Item>
+                                    <Dropdown.Item name='settingsItem' onClick={this.handleDropdownClicked}>
+                                        <Icon name='settings'/>Settings
+                                    </Dropdown.Item>
+                                    <Dropdown.Item name='logOutItem' onClick={this.handleDropdownClicked}>
+                                        <Icon name='log out'/>Log out
+                                    </Dropdown.Item>
                                 </Dropdown.Menu>
                             </Dropdown>
-                        </Menu.Item>
-                        <Menu.Item>
-                            <List>
-                            <List.Item>
-                                <a href={addressExplorerUrl} target='_blank'>
-                                    {this.state.address}
-                                </a>
-                            </List.Item>
-                            <List.Item>
-                                Balance: <Label as='a' href={addressExplorerUrl} target='_blank' color='orange'>{parseFloat(web3.utils.fromWei("" +this.state.balance, 'ether')).toFixed(8) + ' ETH' }</Label>
-                                {pendingTxItem}
-                            </List.Item>
-                            </List>
-                        </Menu.Item>
-                        <Menu.Item>
-                            {memberInfo}
-                        </Menu.Item>
-                    </Menu.Menu>
-                );
+                        );
+                    } else {
+                        memberInfo = (
+                            <Button color='orange' onClick={this.handleJoinClicked} 
+                                loading={this.state.isJoinButtonLoading} 
+                                disabled={this.state.isJoinButtonLoading}>Join CryptoMessenger</Button>
+                        );
+                    }
+
+                    var pendingTxItem;
+                    if (this.state.numPendingTx > 0) {
+                        pendingTxItem = (
+                            <Label as='a' color='yellow' href={addressExplorerUrl} target='_blank'>
+                                <Icon name='spinner' loading/>
+                                {this.state.numPendingTx} pending tx
+                            </Label>
+                        );
+                    }
+
+                    accountInfo = (
+                        <Menu.Menu position='right'>
+                            <Menu.Item>
+                            <Dropdown item text={Config.ENV.NetworkName}>
+                                    <Dropdown.Menu>
+                                        {networkItems}
+                                    </Dropdown.Menu>
+                                </Dropdown>
+                            </Menu.Item>
+                            <Menu.Item>
+                                <List>
+                                <List.Item>
+                                    <a href={addressExplorerUrl} target='_blank'>
+                                        {this.state.address}
+                                    </a>
+                                </List.Item>
+                                <List.Item>
+                                    Balance: <Label as='a' href={addressExplorerUrl} target='_blank' color='orange'>{parseFloat(web3.utils.fromWei("" +this.state.balance, 'ether')).toFixed(8) + ' ETH' }</Label>
+                                    {pendingTxItem}
+                                </List.Item>
+                                </List>
+                            </Menu.Item>
+                            <Menu.Item>
+                                {memberInfo}
+                            </Menu.Item>
+                        </Menu.Menu>
+                    );
+                } else {
+                    accountInfo = (
+                        <Menu.Menu position='right'>
+                            <Menu.Item>
+                                <Button onClick={this.handleImportPrivateKeyClicked} color='blue'>Import private key</Button>
+                            </Menu.Item>
+                        </Menu.Menu>
+                    );
+                }
             } else {
-                accountInfo = (
-                    <Menu.Menu position='right'>
-                        <Menu.Item>
-                            <Button onClick={this.handleImportPrivateKeyClicked} color='blue'>Import private key</Button>
-                        </Menu.Item>
-                    </Menu.Menu>
-                );
+                accountInfo = (<Loader inverted active />);
             }
         }
 
@@ -209,9 +215,10 @@ class HeaderMenu extends Component {
                 <link rel="stylesheet" href="//cdnjs.cloudflare.com/ajax/libs/semantic-ui/2.2.12/semantic.min.css"></link>
                 </Head>
                 <Container>
-                <Menu.Item>Project name</Menu.Item>
-                <Menu.Item>About zzz</Menu.Item>
-                    {accountInfo}
+                <Menu.Item>
+                    <a href='/'><Image src='static/images/logo_small.png' height={44} /></a>
+                </Menu.Item>
+                    {this.account ? accountInfo: (<div></div>)}
                 </Container>
             </Menu>
         );

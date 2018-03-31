@@ -83,7 +83,7 @@ class LocalStorageManager {
 
     addAcceptContactEvents = (events) => {
         for (var i=0;i<events.length;i++) {
-            this.addContact(events[i].returnValues["from"], "", "", "", Constant.Relationship.Connected);
+            this.updateContact(events[i].returnValues["from"], "", "", "", Constant.Relationship.Connected);
         }
     }
 

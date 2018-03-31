@@ -23,6 +23,7 @@ import Chat from '../components/Chat';
 import ErrorModal from '../components/ErrorModal';
 import SettingsModal from '../components/SettingsModal';
 import TransactionModal from '../components/TransactionModal';
+import Footer from '../components/Footer';
 
 class Index extends Component {
     constructor(props) {
@@ -54,7 +55,7 @@ class Index extends Component {
     render() {
         var account = this.account;
 
-        var listHeight = this.state.height - 120;
+        var listHeight = this.state.height - 140;
         return (
             <Container>
                 <UpdateProfileModal account={account} />
@@ -74,7 +75,7 @@ class Index extends Component {
                     </Grid.Column>
                 </Grid.Row>
             </Grid>
-            {/* </div> */}
+            <Footer />
             </Container>
         );
     }

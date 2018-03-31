@@ -1,3 +1,5 @@
+module.exports.APP_NAME = "EtherChat";
+
 module.exports.ACTION = {
     ADD_CONTACT: 'ADD_CONTACT_ACTION',
     SELECT_CONTACT: 'SELECT_CONTACT_ACTION',
