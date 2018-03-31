@@ -109,16 +109,21 @@ class EventHandler {
     }
 
     pullEvents = async () => {
-        var currentDataBlock = parseInt(window.localStorage.currentDataBlock);
-        var blockNumber = await web3.eth.getBlockNumber();
+        try {
+            var currentDataBlock = parseInt(window.localStorage.currentDataBlock);
+            var blockNumber = await web3.eth.getBlockNumber();
 
-        if (blockNumber > currentDataBlock) {
-            await this.pullContactEvents(blockNumber, currentDataBlock);
-            await this.pullMessageEvents(blockNumber, currentDataBlock);
-            window.localStorage.setItem('currentDataBlock', blockNumber);
+            if (blockNumber > currentDataBlock) {
+                await this.pullContactEvents(blockNumber, currentDataBlock);
+                await this.pullMessageEvents(blockNumber, currentDataBlock);
+                window.localStorage.setItem('currentDataBlock', blockNumber);
+            
+            }
+        } catch (err) {
+            console.log(err.message);
         }
 
-        setTimeout(this.pullEvents, 10000);
+        setTimeout(this.pullEvents, 5000);
     }
 
     start = () => {

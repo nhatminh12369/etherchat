@@ -80,19 +80,6 @@ class AccountManager {
         })
     }
 
-    getContactList = async () => {
-        // var result = await this.callToContractMethod(this.contract.methods.getContactList());
-    }
-
-    // convertToMemberInfo = (hexData) => {
-    //     var member = {};
-    //     member.publicKey = hexData.substr(2, 128);
-    //     member.name = Buffer.from(hexData.substr(130, 64), 'hex').toString('ascii');
-    //     member.avatarUrl = Buffer.from(hexData.substr(194, 64), 'hex').toString('ascii');
-    //     member.isMember = parseInt(hexData.substr(194+128, 64), 'hex');
-    //     return member;
-    // }
-
     loadPrivateKey = () => {
         var privateKeyHex = this.storageManager.getPrivateKey();
         if (privateKeyHex) {
@@ -150,6 +137,11 @@ class AccountManager {
                 if (callback) callback(Constant.EVENT.ON_RECEIPT);
             })
             .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
+                appDispatcher.dispatch({
+                    action: Constant.EVENT.ENCOUNTERED_ERROR,
+                    message: error.message,
+                    title: "Error"
+                });
                 if (callback) callback(Constant.EVENT.ON_ERROR);
             });
     }
@@ -164,6 +156,11 @@ class AccountManager {
                 if (callback) callback(Constant.EVENT.ON_RECEIPT);
             })
             .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
+                appDispatcher.dispatch({
+                    action: Constant.EVENT.ENCOUNTERED_ERROR,
+                    message: error.message,
+                    title: "Error"
+                });
                 if (callback) callback(Constant.EVENT.ON_ERROR);
             });
     }
@@ -178,6 +175,11 @@ class AccountManager {
                 if (callback) callback(Constant.EVENT.ON_RECEIPT);
             })
             .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
+                appDispatcher.dispatch({
+                    action: Constant.EVENT.ENCOUNTERED_ERROR,
+                    message: error.message,
+                    title: "Error"
+                });
                 if (callback) callback(Constant.EVENT.ON_ERROR);
             });
     }
@@ -194,6 +196,11 @@ class AccountManager {
                 if (callback) callback(Constant.EVENT.ON_RECEIPT);
             })
             .on(Constant.EVENT.ON_ERROR, (error, txHash) => {
+                appDispatcher.dispatch({
+                    action: Constant.EVENT.ENCOUNTERED_ERROR,
+                    message: error.message,
+                    title: "Error"
+                });
                 if (callback) callback(Constant.EVENT.ON_ERROR);
             });
     }

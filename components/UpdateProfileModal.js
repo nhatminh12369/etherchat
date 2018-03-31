@@ -23,7 +23,11 @@ class UpdateProfileModal extends Component {
 
     updateProfileClicked = (e) => {
         e.preventDefault();
-        this.account.updateProfile(this.state.name, this.state.avatarUrl);        
+        this.account.updateProfile(this.state.name, this.state.avatarUrl, (resultEvent) => {
+            if (resultEvent == Constant.EVENT.ON_RECEIPT) {
+                window.location.reload();
+            }
+        });
         this.setState({ modalOpen: false });
     }
 
