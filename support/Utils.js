@@ -1,5 +1,5 @@
-const crypto = require('crypto');
-const wallet = require('ethereumjs-wallet');
+import crypto from 'crypto';
+import wallet from 'ethereumjs-wallet';
 
 var algorithm = 'aes256';
 

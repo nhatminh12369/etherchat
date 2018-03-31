@@ -1,7 +1,6 @@
 import web3 from '../ethereum/web3';
 import appDispatcher from '../support/AppDispatcher';
 import Constant from '../support/Constant';
-import { Relationship } from './Relationship';
 import utils from '../support/Utils';
 
 class EventHandler {
@@ -11,97 +10,112 @@ class EventHandler {
         this.storageManager = storageManager;
     }
 
-    pullEvents = async () => {
-        var currentDataBlock = parseInt(window.localStorage.currentDataBlock);
-        var currentBlockNumber = await web3.eth.getBlockNumber();
+    pullContactEvents = async (blockNumber, currentDataBlock) => {
+        var myRequestEvents = await this.contract.getPastEvents('addContactEvent', {
+            filter: {from: this.myAddress},
+            fromBlock: currentDataBlock+1,
+            toBlock: blockNumber
+        });
+        this.storageManager.addRequestEvents(myRequestEvents);
 
-        if (currentBlockNumber > currentDataBlock) {
-            var myRequestEvents = await this.contract.getPastEvents('addContactEvent', {
-                filter: {from: this.myAddress},
-                fromBlock: currentDataBlock+1,
-                toBlock: currentBlockNumber
-            });
-            this.storageManager.addRequestEvents(myRequestEvents);
+        var invitationEvents = await this.contract.getPastEvents('addContactEvent', {
+            filter: {to: this.myAddress},
+            fromBlock: currentDataBlock+1,
+            toBlock: blockNumber
+        });
+        this.storageManager.addInvitationEvents(invitationEvents);
 
-            var invitationEvents = await this.contract.getPastEvents('addContactEvent', {
-                filter: {to: this.myAddress},
-                fromBlock: currentDataBlock+1,
-                toBlock: currentBlockNumber
-            });
-            this.storageManager.addInvitationEvents(invitationEvents);
+        for (var i=0;i<myRequestEvents.length;i++) {
+            await this.getMemberInfo(myRequestEvents[i].returnValues.to, Constant.Relationship.Requested);
+        }
+        for (var i=0;i<invitationEvents.length;i++) {
+            await this.getMemberInfo(invitationEvents[i].returnValues.from, Constant.Relationship.NoRelation);
+        }
 
-            for (var i=0;i<myRequestEvents.length;i++) {
-                await this.getMemberInfo(myRequestEvents[i].returnValues.to, Relationship.NoRelation);
-            }
-            for (var i=0;i<invitationEvents.length;i++) {
-                await this.getMemberInfo(invitationEvents[i].returnValues.from, Relationship.Requested);
-            }
+        var myAcceptContactEvents = await this.contract.getPastEvents('acceptContactEvent', {
+            filter: {from: this.myAddress},
+            fromBlock: currentDataBlock+1,
+            toBlock: blockNumber
+        });
+        this.storageManager.addMyAcceptContactEvents(myAcceptContactEvents);
 
-            if (myRequestEvents.length > 0 || invitationEvents.length > 0) {
-                appDispatcher.dispatch({
-                    action: Constant.EVENT.CONTACT_LIST_UPDATED
-                })
-            }
+        var acceptContactEvents = await this.contract.getPastEvents('acceptContactEvent', {
+            filter: {to: this.myAddress},
+            fromBlock: currentDataBlock+1,
+            toBlock: blockNumber
+        });
+        this.storageManager.addAcceptContactEvents(acceptContactEvents);
 
-            var myAcceptContactEvents = await this.contract.getPastEvents('acceptContactEvent', {
-                filter: {from: this.myAddress},
-                fromBlock: currentDataBlock+1,
-                toBlock: currentBlockNumber
-            });
-            this.storageManager.addMyAcceptContactEvents(myAcceptContactEvents);
+        var profileUpdateEvents = await this.contract.getPastEvents('profileUpdateEvent', {
+            filter: {from: this.storageManager.contactAddresses},
+            fromBlock: currentDataBlock + 1,
+            toBlock: blockNumber
+        });
+        
+        for (var i=0;i<profileUpdateEvents.length;i++) {
+            var eventData = profileUpdateEvents[i].returnValues;
+            this.storageManager.updateContact(eventData.from, "", 
+                utils.hexStringToAsciiString(eventData.name), 
+                utils.hexStringToAsciiString(eventData.avatarUrl), 0);
+        }
 
-            var acceptContactEvents = await this.contract.getPastEvents('acceptContactEvent', {
-                filter: {to: this.myAddress},
-                fromBlock: currentDataBlock+1,
-                toBlock: currentBlockNumber
-            });
-            this.storageManager.addAcceptContactEvents(acceptContactEvents);
+        if (myRequestEvents.length > 0 || invitationEvents.length > 0 || 
+            profileUpdateEvents.length > 0 || myAcceptContactEvents.length > 0 || 
+            acceptContactEvents.length > 0) {
 
-            if (myRequestEvents.length > 0 || invitationEvents.length > 0 ||
-                myAcceptContactEvents.length > 0 || acceptContactEvents.length > 0) {
-                appDispatcher.dispatch({
-                    action: Constant.EVENT.CONTACT_LIST_UPDATED
-                })
-            }
+            appDispatcher.dispatch({
+                action: Constant.EVENT.CONTACT_LIST_UPDATED
+            })
+        }
+    }
 
-            var messagesSent = await this.contract.getPastEvents('messageSentEvent', {
-                filter: {from: this.myAddress},
-                fromBlock: currentDataBlock + 1,
-                toBlock: currentBlockNumber
-            });
-            var messagesReceived = await this.contract.getPastEvents('messageSentEvent', {
-                filter: {to: this.myAddress},
-                fromBlock: currentDataBlock + 1,
-                toBlock: currentBlockNumber
-            });
+    pullMessageEvents = async (blockNumber, currentDataBlock) => {
+        var messagesSent = await this.contract.getPastEvents('messageSentEvent', {
+            filter: {from: this.myAddress},
+            fromBlock: currentDataBlock + 1,
+            toBlock: blockNumber
+        });
+        var messagesReceived = await this.contract.getPastEvents('messageSentEvent', {
+            filter: {to: this.myAddress},
+            fromBlock: currentDataBlock + 1,
+            toBlock: blockNumber
+        });
 
-            var iSent=0;
-            var iReceived=0;
-            while (iSent < messagesSent.length || iReceived < messagesReceived.length) {
-                if (iSent >= messagesSent.length) {
-                    this.storageManager.addMessageFromFriendEvent(messagesReceived[iReceived]);
-                    iReceived++;
-                } else if (iReceived >= messagesReceived.length) {
+        var iSent=0;
+        var iReceived=0;
+        while (iSent < messagesSent.length || iReceived < messagesReceived.length) {
+            if (iSent >= messagesSent.length) {
+                this.storageManager.addMessageFromFriendEvent(messagesReceived[iReceived]);
+                iReceived++;
+            } else if (iReceived >= messagesReceived.length) {
+                this.storageManager.addMyMessageEvent(messagesSent[iSent]);
+                iSent++;
+            } else {
+                if (messagesSent[iSent].blockNumber < messagesReceived[iReceived].blockNumber) {
                     this.storageManager.addMyMessageEvent(messagesSent[iSent]);
                     iSent++;
                 } else {
-                    if (messagesSent[iSent].blockNumber < messagesReceived[iReceived].blockNumber) {
-                        this.storageManager.addMyMessageEvent(messagesSent[iSent]);
-                        iSent++;
-                    } else {
-                        this.storageManager.addMessageFromFriendEvent(messagesReceived[iReceived]);
-                        iReceived++;
-                    }
+                    this.storageManager.addMessageFromFriendEvent(messagesReceived[iReceived]);
+                    iReceived++;
                 }
             }
+        }
 
-            if (messagesReceived.length > 0 || messagesSent.length > 0) {
-                appDispatcher.dispatch({
-                    action: Constant.EVENT.MESSAGES_UPDATED,
-                })
-            }
+        if (messagesReceived.length > 0 || messagesSent.length > 0) {
+            appDispatcher.dispatch({
+                action: Constant.EVENT.MESSAGES_UPDATED,
+            })
+        }
+    }
 
-            window.localStorage.setItem('currentDataBlock', currentBlockNumber);
+    pullEvents = async () => {
+        var currentDataBlock = parseInt(window.localStorage.currentDataBlock);
+        var blockNumber = await web3.eth.getBlockNumber();
+
+        if (blockNumber > currentDataBlock) {
+            await this.pullContactEvents(blockNumber, currentDataBlock);
+            await this.pullMessageEvents(blockNumber, currentDataBlock);
+            window.localStorage.setItem('currentDataBlock', blockNumber);
         }
 
         setTimeout(this.pullEvents, 10000);
@@ -109,10 +123,6 @@ class EventHandler {
 
     start = () => {
         this.pullEvents();
-    }
-
-    getBlockNumber = async () => {
-        var blockNumber = await web3.eth.getBlockNumber();
     }
 
     getMemberInfo = async (address, relationship) => {

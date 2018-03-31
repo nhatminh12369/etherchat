@@ -4,12 +4,9 @@ import {
     Modal,
     Input,
     Message,
-    Loader,
-    Dimmer,
     Button,
     Icon,
-    Header,
-    Segment
+    Header
 } from 'semantic-ui-react';
 import appDispatcher from '../support/AppDispatcher';
 import Constant from '../support/Constant';

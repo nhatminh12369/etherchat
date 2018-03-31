@@ -10,6 +10,7 @@ import {
 } from 'semantic-ui-react';
 import appDispatcher from '../support/AppDispatcher';
 import Constant from '../support/Constant';
+import Config from '../support/Config';
 import utils from '../support/Utils';
 
 class Chat extends Component {
@@ -74,7 +75,7 @@ class Chat extends Component {
                         lastObjectAnchor = (<span ref={lastObjectAnchor => { this.lastObjectAnchor = lastObjectAnchor; }} />);
                     }
 
-                    var explorerUrl = Constant.ENV.ExplorerUrl + 'tx/' + messages[i].txHash;
+                    var explorerUrl = Config.ENV.ExplorerUrl + 'tx/' + messages[i].txHash;
                     if (messages[i].isMine) {
                         if (messages[i].status == Constant.SENT_STATUS.PENDING) {
                             messageItems.push(

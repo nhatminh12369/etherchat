@@ -1,16 +1,16 @@
 import { sha256 } from 'ethereumjs-util';
 
-var Wallet = require('ethereumjs-wallet');
-var crypto = require('crypto');
-var web3 = require('../ethereum/web3').default;
-var utils = require('../support/Utils');
-var compiledContract = require('../ethereum/build/CryptoMessenger.json');
-var Relationship = require('./Relationship');
-var EventHandler = require('./EventHandler').default;
-var LocalStorageManager = require('./LocalStorageManager').default;
+import Wallet from 'ethereumjs-wallet';
+import crypto from 'crypto';
+import web3 from '../ethereum/web3';
+import utils from '../support/Utils';
+import compiledContract from '../ethereum/build/CryptoMessenger.json';
+import EventHandler from './EventHandler';
+import LocalStorageManager from './LocalStorageManager';
 import appDispatcher from '../support/AppDispatcher';
 import TransactionManager from './TransactionManager';
-var Constant = require('../support/Constant');
+import Constant from '../support/Constant';
+import Config from '../support/Config';
 
 class AccountManager {
     constructor() {
@@ -35,7 +35,7 @@ class AccountManager {
 
     getContract = async () => {
         this.contract = await new web3.eth.Contract(JSON.parse(compiledContract.interface), 
-                Constant.ENV.ContractAddress);
+                Config.ENV.ContractAddress);
     }
 
     startStorageManager = () => {
@@ -182,7 +182,7 @@ class AccountManager {
             });
     }
 
-    updateProfile = (name, avatarUrl) => {
+    updateProfile = (name, avatarUrl, callback) => {
         var nameHex = '0x' + Buffer.from(name, 'ascii').toString('hex');
         var avatarUrlHex = '0x' + Buffer.from(avatarUrl, 'ascii').toString('hex');
         var method = this.contract.methods.updateProfile(nameHex, avatarUrlHex);

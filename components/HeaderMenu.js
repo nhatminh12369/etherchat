@@ -13,6 +13,7 @@ import {
 import Head from 'next/head';
 import web3 from '../ethereum/web3';
 import Constant from '../support/Constant';
+import Config from '../support/Config';
 import appDispatcher from '../support/AppDispatcher';
 
 class HeaderMenu extends Component {
@@ -73,8 +74,8 @@ class HeaderMenu extends Component {
             })
         } 
          else if (data.name == 'changeEthNetwork') {
-            if (data.networkid != Constant.ENV.EthNetworkId) {
-                Constant.ENV.EthNetworkId = data.networkid;
+            if (data.networkid != Config.ENV.EthNetworkId) {
+                Config.ENV.EthNetworkId = data.networkid;
                 this.removeNetworkDependentData();
                 window.location.reload();
             }
@@ -107,7 +108,7 @@ class HeaderMenu extends Component {
 
         if (this.state.isLoading == false) {
             if (this.state.address) {
-                var addressExplorerUrl = Constant.ENV.ExplorerUrl + 'address/' + this.state.address;
+                var addressExplorerUrl = Config.ENV.ExplorerUrl + 'address/' + this.state.address;
                 var dropdownTrigger;
 
                 if (this.state.avatarUrl) { 
@@ -121,10 +122,10 @@ class HeaderMenu extends Component {
                 }
 
                 var networkItems = [];
-                for (var i=0;i<Constant.NETWORK_LIST.length;i++) {
+                for (var i=0;i<Config.NETWORK_LIST.length;i++) {
                     networkItems.push(
-                        <Dropdown.Item key={'networkItem' + i} networkid={Constant.NETWORK_LIST[i].id} name='changeEthNetwork' onClick={this.handleDropdownClicked}>
-                            {Constant.NETWORK_LIST[i].name}
+                        <Dropdown.Item key={'networkItem' + i} networkid={Config.NETWORK_LIST[i].id} name='changeEthNetwork' onClick={this.handleDropdownClicked}>
+                            {Config.NETWORK_LIST[i].name}
                         </Dropdown.Item>
                     );
                 }
@@ -167,7 +168,7 @@ class HeaderMenu extends Component {
                 accountInfo = (
                     <Menu.Menu position='right'>
                         <Menu.Item>
-                        <Dropdown item text={Constant.ENV.NetworkName}>
+                        <Dropdown item text={Config.ENV.NetworkName}>
                                 <Dropdown.Menu>
                                     {networkItems}
                                 </Dropdown.Menu>

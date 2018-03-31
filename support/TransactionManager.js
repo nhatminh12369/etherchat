@@ -1,5 +1,6 @@
 import EventEmitter from 'events';
 import Constant from './Constant';
+import Config from './Config';
 import {Dispatcher} from 'flux';
 import web3 from '../ethereum/web3';
 import Tx from 'ethereumjs-tx';
@@ -31,7 +32,7 @@ class TransactionsManager {
             nonce: parseInt(transactionCount + this.numPendingTx),
             gasPrice: parseInt(gasPrice),
             gasLimit: parseInt(gasAmount),
-            to: Constant.ENV.ContractAddress,
+            to: Config.ENV.ContractAddress,
             value: 0,
             data: data
         }

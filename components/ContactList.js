@@ -4,20 +4,15 @@ import {
     Image,
     Loader,
     Dimmer,
-    Menu,
-    Sticky,
-    Grid,
     Button,
     Icon,
-    Segment,
-    Label,
     Header,
     Popup
 } from 'semantic-ui-react';
 import appDispatcher from '../support/AppDispatcher';
 import Constant from '../support/Constant';
+import Config from '../support/Config';
 import AddContactModal from './AddContactModal';
-var {Relationship} = require('../support/Relationship');
 
 class ContactList extends Component {
     constructor(props) {
@@ -28,7 +23,6 @@ class ContactList extends Component {
 
     componentDidMount() {
         this.setState({contactAddresses: this.account.storageManager.contactAddresses});
-        // this.getData();
 
         appDispatcher.register((payload) => {
             if (payload.action == Constant.EVENT.CONTACT_LIST_UPDATED) {
@@ -36,14 +30,6 @@ class ContactList extends Component {
             }
         })
     }
-
-    // getData = async () => {
-    //     if (this.account.isReady) {
-    //         var list = await this.account.getContactList();
-    //     } else {
-    //         setTimeout(this.getData, 1000);
-    //     }
-    // }
 
     addContactClicked = () => {
         if (this.account.isJoined) {
@@ -86,7 +72,7 @@ class ContactList extends Component {
     }
 
     listItemClicked = (address, event) => {
-        if (this.account.storageManager.contacts[address].relationship == Relationship.Connected) {
+        if (this.account.storageManager.contacts[address].relationship == Constant.Relationship.Connected) {
             appDispatcher.dispatch({
                 action: Constant.ACTION.SELECT_CONTACT,
                 data: address
@@ -104,10 +90,6 @@ class ContactList extends Component {
 
         if (contactAddresses == undefined) {
             htmlContent = (<div></div>);
-            //     <Dimmer active>
-            //        <Loader size='large'>Loading</Loader>
-            //     </Dimmer>
-            // )
         } else 
         if (contactAddresses.length == 0) {
             contactItems.push(
@@ -121,9 +103,9 @@ class ContactList extends Component {
         } else {
             for (var i=0;i<contactAddresses.length;i++) {
                 var user = this.account.storageManager.contacts[contactAddresses[i]];
-                var addressExplorerUrl = Constant.ENV.ExplorerUrl + 'address/' + contactAddresses[i];
+                var addressExplorerUrl = Config.ENV.ExplorerUrl + 'address/' + contactAddresses[i];
                 var rightAlignedContent;
-                if (user.relationship == Relationship.NoRelation) {
+                if (user.relationship == Constant.Relationship.NoRelation) {
                     rightAlignedContent = (
                         <List.Content floated='right'>
                             <Button color='orange' loading={user.isAccepting} disabled={user.isAccepting} 
@@ -134,7 +116,7 @@ class ContactList extends Component {
                             />
                         </List.Content>
                     );
-                } else if (user.relationship == Relationship.Requested) {
+                } else if (user.relationship == Constant.Relationship.Requested) {
                     rightAlignedContent = (
                         <List.Content floated='right'>
                             <Popup  key={'wait_popup_' + i}

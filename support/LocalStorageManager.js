@@ -1,8 +1,6 @@
-
-var {Relationship} = require('./Relationship');
-var appDispatcher = require('../support/AppDispatcher');
-var Constant = require('../support/Constant');
-var utils = require('../support/Utils');
+import appDispatcher from '../support/AppDispatcher';
+import Constant from '../support/Constant';
+import utils from '../support/Utils';
 
 class LocalStorageManager {
 
@@ -67,25 +65,25 @@ class LocalStorageManager {
 
     addInvitationEvents = (events) => {
         for (var i=0;i<events.length;i++) {
-            this.addContact(events[i].returnValues["from"], Relationship.NoRelation);
+            this.addContact(events[i].returnValues["from"], Constant.Relationship.NoRelation);
         }
     }
 
     addRequestEvents = (events) => {
         for (var i=0;i<events.length;i++) {
-            this.addContact(events[i].returnValues["to"], Relationship.Requested);
+            this.addContact(events[i].returnValues["to"], Constant.Relationship.Requested);
         }
     }
 
     addMyAcceptContactEvents = (events) => {
         for (var i=0;i<events.length;i++) {
-            this.updateContact(events[i].returnValues["to"], "", "", "", Relationship.Connected);
+            this.updateContact(events[i].returnValues["to"], "", "", "", Constant.Relationship.Connected);
         }
     }
 
     addAcceptContactEvents = (events) => {
         for (var i=0;i<events.length;i++) {
-            this.addContact(events[i].returnValues["from"], "", "", "", Relationship.Connected);
+            this.addContact(events[i].returnValues["from"], "", "", "", Constant.Relationship.Connected);
         }
     }
 
