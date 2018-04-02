@@ -1,6 +1,6 @@
 pragma solidity ^0.4.20;
 
-contract CryptoMessenger {
+contract EtherChat {
     event messageSentEvent(address indexed from, address indexed to, bytes message, bytes32 encryption);
     event addContactEvent(address indexed from, address indexed to);
     event acceptContactEvent(address indexed from, address indexed to);

@@ -39,7 +39,7 @@ class ContactList extends Component {
         } else {
             appDispatcher.dispatch({
                 action: Constant.EVENT.ENCOUNTERED_ERROR,
-                message: 'Please join CryptoMessenger first by click on the \'Join\' button on the top-right corner'
+                message: 'Please join '+Constant.APP_NAME+' first by click on the \'Join\' button on the top-right corner'
             });
         }
     }
@@ -66,7 +66,7 @@ class ContactList extends Component {
         } else {
             appDispatcher.dispatch({
                 action: Constant.EVENT.ENCOUNTERED_ERROR,
-                message: 'Please join CryptoMessenger first by click on the \'Join\' button on the top-right corner'
+                message: 'Please join '+Constant.APP_NAME+' first by click on the \'Join\' button on the top-right corner'
             });
         }
     }

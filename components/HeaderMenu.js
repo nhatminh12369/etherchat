@@ -154,7 +154,7 @@ class HeaderMenu extends Component {
                         memberInfo = (
                             <Button color='orange' onClick={this.handleJoinClicked} 
                                 loading={this.state.isJoinButtonLoading} 
-                                disabled={this.state.isJoinButtonLoading}>Join CryptoMessenger</Button>
+                                disabled={this.state.isJoinButtonLoading}>Join {Constant.APP_NAME}</Button>
                         );
                     }
 

@@ -6,7 +6,7 @@ const {testAccounts} = require('./testAccounts');
 const utils = require('../support/Utils');
 const web3 = new Web3(ganache.provider({accounts: testAccounts}));
 
-const compiledEtherMessage = require('../ethereum/build/CryptoMessenger.json');
+const compiledContract = require('../ethereum/build/EtherChat.json');
 
 let accounts;
 let contract;
@@ -14,8 +14,8 @@ let contract;
 beforeEach(async () => {
     accounts = await web3.eth.getAccounts();
 
-    contract = await new web3.eth.Contract(JSON.parse(compiledEtherMessage.interface))
-        .deploy({data: compiledEtherMessage.bytecode})
+    contract = await new web3.eth.Contract(JSON.parse(compiledContract.interface))
+        .deploy({data: compiledContract.bytecode})
         .send({from: accounts[0], gas: '3000000'});
 });
 

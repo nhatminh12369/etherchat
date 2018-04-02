@@ -1,1 +1,1 @@
-# EtherMessage
+# EtherChat

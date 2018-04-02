@@ -4,7 +4,7 @@ import Wallet from 'ethereumjs-wallet';
 import crypto from 'crypto';
 import web3 from '../ethereum/web3';
 import utils from '../support/Utils';
-import compiledContract from '../ethereum/build/CryptoMessenger.json';
+import compiledContract from '../ethereum/build/EtherChat.json';
 import EventHandler from './EventHandler';
 import LocalStorageManager from './LocalStorageManager';
 import appDispatcher from '../support/AppDispatcher';

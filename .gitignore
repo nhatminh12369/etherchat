@@ -58,5 +58,5 @@ typings/
 .env
 
 package-lock.json
-ethereum/build/EtherMessage.json
+ethereum/build/EtherChat.json
 .next/
