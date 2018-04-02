@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying file LICENSE
 
 module.exports.APP_NAME = "EtherChat";
-module.exports.GITHUB_LINK = "https://github_link";
-module.exports.MEDIUM_LINK = "https://medium.com";
+module.exports.GITHUB_LINK = "https://github.com/nhatminh12369/etherchat";
+module.exports.MEDIUM_LINK = "https://medium.com/@leonardnguyen/etherchat-decentralized-messaging-application-on-ethereum-network-part-1-253e5078770b";
 
 module.exports.ACTION = {
     ADD_CONTACT: 'ADD_CONTACT_ACTION',
