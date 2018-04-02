@@ -2,12 +2,15 @@
 // Distributed under the MIT software license, see the accompanying file LICENSE
 
 module.exports.APP_NAME = "EtherChat";
+module.exports.GITHUB_LINK = "https://github_link";
+module.exports.MEDIUM_LINK = "https://medium.com";
 
 module.exports.ACTION = {
     ADD_CONTACT: 'ADD_CONTACT_ACTION',
     SELECT_CONTACT: 'SELECT_CONTACT_ACTION',
     OPEN_UPDATE_PROFILE: 'OPEN_UPDATE_PROFILE',
     OPEN_PRIVATE_KEY_MODAL: 'OPEN_PRIVATE_KEY_MODAL',
+    OPEN_GUIDE: 'OPEN_GUIDE',
     OPEN_SETTINGS_MODAL: 'OPEN_SETTINGS_MODAL',
     OPEN_TRANSACTION_MODAL: 'OPEN_TRANSACTION_MODAL',
     REJECT_TRANSACTION: 'REJECT_TRANSACTION',

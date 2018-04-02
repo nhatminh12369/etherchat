@@ -61,6 +61,7 @@ class EnterPrivateKeyModal extends Component {
                             onChange={event => this.setState({key: event.target.value})}
                             placeholder='Ethereum private key'/>
                         <Message error header={this.state.errorMessage} hidden={this.state.errorMessage == ""}/>
+                        <p style={{marginTop: 20}}>By clicking Confirm, you also agree to our <a href='/terms' target='_blank'>Term of use</a></p>
                     </Modal.Content>
                     <Modal.Actions>
                     <Button color='blue' onClick={this.handleConfirm}>

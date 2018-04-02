@@ -9,12 +9,14 @@ import {
 import HeaderMenu from '../components/HeaderMenu';
 import Footer from '../components/Footer';
 import Constant from '../support/Constant';
+import GuideModal from '../components/GuideModal';
 
 class Terms extends Component {
     render() {
         return (
             <Container>
                 <HeaderMenu />
+                <GuideModal />
                 <Container style={{marginTop: 100, fontSize: '1.2em'}}>
                     <h1>Term of use</h1>
 
