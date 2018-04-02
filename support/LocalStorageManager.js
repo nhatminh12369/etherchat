@@ -14,19 +14,22 @@ class LocalStorageManager {
     }
 
     loadLocalContactAddresses = () => {
-        var rawContactAddresses = window.localStorage.contactAddresses;
-        if (rawContactAddresses != undefined) {
-            this.contactAddresses = JSON.parse(rawContactAddresses);
-        } else {
-            this.contactAddresses = [];
+        this.contactAddresses = [];
+        if (typeof(Storage) != 'undefined') {
+            var rawContactAddresses = window.localStorage.contactAddresses;
+            if (rawContactAddresses != undefined) {
+                this.contactAddresses = JSON.parse(rawContactAddresses);
+            }
         }
     }
 
     loadContactMessages = () => {
-        for (var i=0;i<this.contactAddresses.length;i++) {
-            var address = this.contactAddresses[i];
-            var localContact = window.localStorage[address];
-            this.contacts[address] = JSON.parse(localContact);
+        if (typeof(Storage) != 'undefined') {
+            for (var i=0;i<this.contactAddresses.length;i++) {
+                var address = this.contactAddresses[i];
+                var localContact = window.localStorage[address];
+                this.contacts[address] = JSON.parse(localContact);
+            }
         }
     }
 

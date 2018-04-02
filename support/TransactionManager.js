@@ -47,11 +47,6 @@ class TransactionsManager {
                     this.updatePendingTx(this.numPendingTx-1);
                     emitter.emit(Constant.EVENT.ON_RECEIPT, receipt);
                 }).on('error', (err, data) => {
-                    // appDispatcher.dispatch({
-                    //     action: Constant.EVENT.ENCOUNTERED_ERROR,
-                    //     message: err.message,
-                    //     title: "Opps!!"
-                    // });
                     this.updatePendingTx(this.numPendingTx-1);
                     emitter.emit(Constant.EVENT.ON_ERROR, err, txHash);
                 });
