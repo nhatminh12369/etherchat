@@ -1,3 +1,6 @@
+// Copyright (c) 2018 Nguyen Vu Nhat Minh
+// Distributed under the MIT software license, see the accompanying file LICENSE
+
 module.exports.APP_NAME = "EtherChat";
 
 module.exports.ACTION = {

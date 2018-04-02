@@ -1,3 +1,6 @@
+// Copyright (c) 2018 Nguyen Vu Nhat Minh
+// Distributed under the MIT software license, see the accompanying file LICENSE
+
 import { sha256 } from 'ethereumjs-util';
 
 import Wallet from 'ethereumjs-wallet';

@@ -1,8 +1,11 @@
+// Copyright (c) 2018 Nguyen Vu Nhat Minh
+// Distributed under the MIT software license, see the accompanying file LICENSE
+
 module.exports.NETWORK_LIST = [
     {
         id: 1,
         name: 'Main Network',
-        contractAddress: '0x3e01d88fd2c2feedf3ff761225628c92182345bc',
+        contractAddress: '0xa38D5E81F34a2f4beBE5312aD5Ef24986e181367',
         explorerUrl: 'https://etherscan.io/',
         providerUrl: 'https://mainnet.infura.io/Q2aBIgYNhIB60VsqyrN1'
     },

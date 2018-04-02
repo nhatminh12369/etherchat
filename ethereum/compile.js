@@ -1,3 +1,6 @@
+// Copyright (c) 2018 Nguyen Vu Nhat Minh
+// Distributed under the MIT software license, see the accompanying file LICENSE
+
 const path = require('path');
 const solc = require('solc');
 const fs = require('fs-extra');

@@ -1,3 +1,6 @@
+// Copyright (c) 2018 Nguyen Vu Nhat Minh
+// Distributed under the MIT software license, see the accompanying file LICENSE
+
 import {Component} from 'react';
 import web3 from '../ethereum/web3';
 import {
