@@ -5,7 +5,7 @@ module.exports.NETWORK_LIST = [
     {
         id: 1,
         name: 'Main Network',
-        contractAddress: '0x9F26eB625e82C69417CA28AA91173Fc3b2A6A2ca',
+        contractAddress: '0x163485b3cddc7b3202e56ad31fb1921a00759f21',
         explorerUrl: 'https://etherscan.io/',
         providerUrl: 'https://mainnet.infura.io/Q2aBIgYNhIB60VsqyrN1'
     },
