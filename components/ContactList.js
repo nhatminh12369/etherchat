@@ -63,6 +63,7 @@ class ContactList extends Component {
                     this.forceUpdate();
                 } else if (resultEvent == Constant.EVENT.ON_RECEIPT) {
                     this.account.storageManager.contacts[address].isAccepting = false;
+                    this.account.storageManager.contacts[address].relationship = Constant.Relationship.Connected;
                     this.setState({contactAddresses: this.account.storageManager.contactAddresses});
                 }
             });
@@ -75,7 +76,8 @@ class ContactList extends Component {
     }
 
     listItemClicked = (address, event) => {
-        if (this.account.storageManager.contacts[address].relationship == Constant.Relationship.Connected) {
+        if (this.account.storageManager.contacts[address].relationship == Constant.Relationship.Connected &&
+            this.account.storageManager.contacts[address].publicKey) {
             appDispatcher.dispatch({
                 action: Constant.ACTION.SELECT_CONTACT,
                 data: address

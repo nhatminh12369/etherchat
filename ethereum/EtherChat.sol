@@ -48,6 +48,7 @@ contract EtherChat {
     
     function addContact(address addr) public onlyMember {
         require(relationships[msg.sender][addr] == RelationshipType.NoRelation);
+        require(relationships[addr][msg.sender] == RelationshipType.NoRelation);
         
         relationships[msg.sender][addr] = RelationshipType.Requested;
         emit addContactEvent(msg.sender, addr);

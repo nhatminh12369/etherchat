@@ -37,7 +37,6 @@ class Index extends Component {
     }
 
     componentDidMount() {
-        console.log(window.localStorage);
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
         this.account.loadPrivateKey();

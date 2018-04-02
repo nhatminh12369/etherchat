@@ -5,14 +5,14 @@ module.exports.NETWORK_LIST = [
     {
         id: 1,
         name: 'Main Network',
-        contractAddress: '0xa38D5E81F34a2f4beBE5312aD5Ef24986e181367',
+        contractAddress: '0x9F26eB625e82C69417CA28AA91173Fc3b2A6A2ca',
         explorerUrl: 'https://etherscan.io/',
         providerUrl: 'https://mainnet.infura.io/Q2aBIgYNhIB60VsqyrN1'
     },
     {
         id: 4,
         name: 'Rinkeby Test Net',
-        contractAddress: '0x1c1178dAd2d03C6F2cA907Ac8AA2bC9c8Bc56ACE',
+        contractAddress: '0xa8d27Eda6518Ac6CcF3eb7Ec100B1fc8ef850e80',
         explorerUrl: 'https://rinkeby.etherscan.io/',
         providerUrl: 'https://rinkeby.infura.io/Q2aBIgYNhIB60VsqyrN1'
     }

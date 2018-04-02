@@ -49,6 +49,15 @@ class EventHandler {
         });
         this.storageManager.addAcceptContactEvents(acceptContactEvents);
 
+        // If the one who accept our contact doesn't have publicKey yet 
+        // we need to get it from the contract
+        for (var i=0;i<acceptContactEvents.length;i++) {
+            var fromAddress = acceptContactEvents[i].returnValues.from;
+            if (!this.storageManager.contacts[fromAddress].publicKey) {
+                await this.getMemberInfo(fromAddress, Constant.Relationship.Connected);
+            }
+        }
+
         var profileUpdateEvents = await this.contract.getPastEvents('profileUpdateEvent', {
             filter: {from: this.storageManager.contactAddresses},
             fromBlock: currentDataBlock + 1,
