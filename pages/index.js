@@ -61,6 +61,10 @@ class Index extends Component {
         var listHeight = this.state.height - 140;
         return (
             <Container>
+                <Head>
+                    <title>EtherChat - Decentralized messaging on Ethereum network</title>
+                </Head>
+
                 <UpdateProfileModal account={account} />
                 <PrivateKeyModal account={account} />
                 <HeaderMenu account={account} />

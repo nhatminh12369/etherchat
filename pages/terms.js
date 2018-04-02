@@ -10,15 +10,19 @@ import HeaderMenu from '../components/HeaderMenu';
 import Footer from '../components/Footer';
 import Constant from '../support/Constant';
 import GuideModal from '../components/GuideModal';
+import Head from 'next/head';
 
 class Terms extends Component {
     render() {
         return (
             <Container>
+                <Head>
+                    <title>EtherChat - Terms of use</title>
+                </Head>
                 <HeaderMenu />
                 <GuideModal />
                 <Container style={{marginTop: 100, fontSize: '1.2em'}}>
-                    <h1>Term of use</h1>
+                    <h1>Terms of use</h1>
 
                     <h2>1. Acceptance of terms</h2>
                     <p>{Constant.APP_NAME} is a messaging application that operate directly on the 
