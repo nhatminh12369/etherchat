@@ -4,7 +4,10 @@ EtherChat is an decentralized app running on Ethereum platform that allows you t
 EtherChat only depends on the Ethereum network and can work without any centralized server.
 
 # Article on Medium
-Article on Medium(https://medium.com/@leonardnguyen/etherchat-decentralized-messaging-application-on-ethereum-network-part-1-253e5078770b)
+https://medium.com/@leonardnguyen/etherchat-decentralized-messaging-application-on-ethereum-network-part-1-253e5078770b
+
+# Official web app
+https://etherchat.co
 
 # Authors
 
