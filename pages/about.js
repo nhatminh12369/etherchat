@@ -6,10 +6,10 @@ import {
     Container,
     Segment
 } from 'semantic-ui-react';
-import HeaderMenu from '../components/HeaderMenu';
-import Footer from '../components/Footer';
+import HeaderMenu from '../views/HeaderMenu';
+import Footer from '../views/Footer';
 import Constant from '../support/Constant';
-import GuideModal from '../components/GuideModal';
+import GuideModal from '../views/modals/GuideModal';
 import Head from 'next/head';
 
 class About extends Component {

@@ -10,7 +10,7 @@ import utils from '../support/Utils';
 import compiledContract from '../ethereum/build/EtherChat.json';
 import EventHandler from './EventHandler';
 import LocalStorageManager from './LocalStorageManager';
-import appDispatcher from '../support/AppDispatcher';
+import appDispatcher from '../core/AppDispatcher';
 import TransactionManager from './TransactionManager';
 import Constant from '../support/Constant';
 import Config from '../support/Config';
@@ -36,11 +36,13 @@ class AccountManager {
         this.transactionManager = new TransactionManager(this);
     }
 
+    // Create a web3 contract object that represent the ethereum smart contract
     getContract = async () => {
         this.contract = await new web3.eth.Contract(JSON.parse(compiledContract.interface), 
                 Config.ENV.ContractAddress);
     }
 
+    // Create a LocalStorageManager instance and load user information from browser's local storage
     startStorageManager = () => {
         this.storageManager = new LocalStorageManager();
         this.storageManager.initialize();
@@ -50,16 +52,17 @@ class AccountManager {
         this.isJoined = this.storageManager.getJoinedStatus();
     }
 
+    // Start to listen to EtherChat's events
     startEventHandler = async () => {
         var address = this.getAddress();
         if (address) {
             this.eventHandler = new EventHandler(address, this.contract, this.storageManager);
             this.eventHandler.start();
             await this.getProfile();
-            // await this.getContactList();
         }
     }
 
+    // Get current account profile from EtherChat contract's storage
     getProfile = async () => {
         var result = await this.contract.methods.members(this.getAddress()).call();
         if (result.isMember == 1) {
@@ -75,6 +78,7 @@ class AccountManager {
         }
     }
 
+    // Update balance of the current account
     updateBalance = async () => {
         this.balance = await web3.eth.getBalance(this.walletAccount.getAddress().toString('hex'));
         this.storageManager.setBalance(this.balance);
@@ -83,6 +87,7 @@ class AccountManager {
         })
     }
 
+    // Load private key from browser's local storage
     loadPrivateKey = () => {
         var privateKeyHex = this.storageManager.getPrivateKey();
         if (privateKeyHex) {
@@ -117,6 +122,7 @@ class AccountManager {
         }
     }
 
+    // Compute a secret key for messages encryption/decryption
     computeSecret = (publicKey) => {
         var a = crypto.createECDH('secp256k1');
         a.generateKeys();
@@ -124,6 +130,7 @@ class AccountManager {
         return a.computeSecret(publicKey);
     }
 
+    // Initiate a request to send a transaction to EtherChat contract to join
     joinContract = (callback) => {
         var publicKey = this.walletAccount.getPublicKey();
         var publicKeyLeft = '0x' + publicKey.toString('hex', 0, 32);

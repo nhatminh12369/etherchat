@@ -1,7 +1,7 @@
 // Copyright (c) 2018 Nguyen Vu Nhat Minh
 // Distributed under the MIT software license, see the accompanying file LICENSE
 
-import appDispatcher from '../support/AppDispatcher';
+import appDispatcher from '../core/AppDispatcher';
 import Constant from '../support/Constant';
 import utils from '../support/Utils';
 

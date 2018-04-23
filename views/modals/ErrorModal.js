@@ -8,8 +8,8 @@ import {
     Button,
     Message
 } from 'semantic-ui-react';
-import appDispatcher from '../support/AppDispatcher';
-import Constant from '../support/Constant';
+import appDispatcher from '../../core/AppDispatcher';
+import Constant from '../../support/Constant';
 
 class ErrorModal extends Component {
     state = { modalOpen: false, message: "", title: ""}

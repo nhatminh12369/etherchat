@@ -12,8 +12,8 @@ import {
     Form,
     Input
 } from 'semantic-ui-react';
-import Constant from '../support/Constant';
-import web3 from '../ethereum/web3';
+import Constant from '../../support/Constant';
+import web3 from '../../ethereum/web3';
 
 class TransactionModal extends Component {
     constructor(props) {

@@ -1,8 +1,8 @@
 // Copyright (c) 2018 Nguyen Vu Nhat Minh
 // Distributed under the MIT software license, see the accompanying file LICENSE
 
-import crypto from 'crypto';
-import wallet from 'ethereumjs-wallet';
+var crypto = require('crypto');
+var wallet = require('ethereumjs-wallet');
 
 var algorithm = 'aes256';
 

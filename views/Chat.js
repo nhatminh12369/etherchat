@@ -11,7 +11,7 @@ import {
     Header,
     Label
 } from 'semantic-ui-react';
-import appDispatcher from '../support/AppDispatcher';
+import appDispatcher from '../core/AppDispatcher';
 import Constant from '../support/Constant';
 import Config from '../support/Config';
 import utils from '../support/Utils';

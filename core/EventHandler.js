@@ -2,9 +2,12 @@
 // Distributed under the MIT software license, see the accompanying file LICENSE
 
 import web3 from '../ethereum/web3';
-import appDispatcher from '../support/AppDispatcher';
+import appDispatcher from '../core/AppDispatcher';
 import Constant from '../support/Constant';
 import utils from '../support/Utils';
+
+// EventHandler object currently make requests to the smart contract periodically 
+//    to get events initiated by the contract.
 
 class EventHandler {
     constructor(myAddress, contract, storageManager) {

@@ -17,7 +17,7 @@ import Head from 'next/head';
 import web3 from '../ethereum/web3';
 import Constant from '../support/Constant';
 import Config from '../support/Config';
-import appDispatcher from '../support/AppDispatcher';
+import appDispatcher from '../core/AppDispatcher';
 
 class HeaderMenu extends Component {
     constructor(props) {

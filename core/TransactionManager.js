@@ -2,8 +2,8 @@
 // Distributed under the MIT software license, see the accompanying file LICENSE
 
 import EventEmitter from 'events';
-import Constant from './Constant';
-import Config from './Config';
+import Constant from '../support/Constant';
+import Config from '../support/Config';
 import {Dispatcher} from 'flux';
 import web3 from '../ethereum/web3';
 import Tx from 'ethereumjs-tx';

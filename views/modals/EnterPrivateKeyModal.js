@@ -10,8 +10,8 @@ import {
     Input,
     Message
 } from 'semantic-ui-react';
-import appDispatcher from '../support/AppDispatcher';
-import Constant from '../support/Constant';
+import appDispatcher from '../../core/AppDispatcher';
+import Constant from '../../support/Constant';
 
 class EnterPrivateKeyModal extends Component {
     constructor(props) {

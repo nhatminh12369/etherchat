@@ -12,10 +12,10 @@ import {
     Header,
     Popup
 } from 'semantic-ui-react';
-import appDispatcher from '../support/AppDispatcher';
+import appDispatcher from '../core/AppDispatcher';
 import Constant from '../support/Constant';
 import Config from '../support/Config';
-import AddContactModal from './AddContactModal';
+import AddContactModal from './modals/AddContactModal';
 
 class ContactList extends Component {
     constructor(props) {

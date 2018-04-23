@@ -4,7 +4,7 @@
 import {Component} from 'react';
 import Constant from '../support/Constant';
 import {Button} from 'semantic-ui-react';
-import appDispatcher from '../support/AppDispatcher';
+import appDispatcher from '../core/AppDispatcher';
 
 class Footer extends Component {
     openGuide(e) {

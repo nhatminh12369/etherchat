@@ -14,19 +14,19 @@ import {
     Input,
     Segment
 } from 'semantic-ui-react';
-import HeaderMenu from '../components/HeaderMenu';
+import HeaderMenu from '../views/HeaderMenu';
 import web3 from '../ethereum/web3';
-import PrivateKeyModal from '../components/EnterPrivateKeyModal';
-import UpdateProfileModal from '../components/UpdateProfileModal';
-import GuideModal from '../components/GuideModal';
+import PrivateKeyModal from '../views/modals/EnterPrivateKeyModal';
+import UpdateProfileModal from '../views/modals/UpdateProfileModal';
+import GuideModal from '../views/modals/GuideModal';
 import Head from 'next/head';
-import AccountManager from '../support/AccountManager';
-import ContactList from '../components/ContactList';
-import Chat from '../components/Chat';
-import ErrorModal from '../components/ErrorModal';
-import SettingsModal from '../components/SettingsModal';
-import TransactionModal from '../components/TransactionModal';
-import Footer from '../components/Footer';
+import AccountManager from '../core/AccountManager';
+import ContactList from '../views/ContactList';
+import Chat from '../views/Chat';
+import ErrorModal from '../views/modals/ErrorModal';
+import SettingsModal from '../views/modals/SettingsModal';
+import TransactionModal from '../views/modals/TransactionModal';
+import Footer from '../views/Footer';
 
 class Index extends Component {
     constructor(props) {

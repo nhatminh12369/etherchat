@@ -2,7 +2,7 @@
 // Distributed under the MIT software license, see the accompanying file LICENSE
 
 import {Component} from 'react';
-import web3 from '../ethereum/web3';
+import web3 from '../../ethereum/web3';
 import {
     Modal,
     Input,
@@ -11,8 +11,8 @@ import {
     Icon,
     Header
 } from 'semantic-ui-react';
-import appDispatcher from '../support/AppDispatcher';
-import Constant from '../support/Constant';
+import appDispatcher from '../../core/AppDispatcher';
+import Constant from '../../support/Constant';
 
 class AddContactModal extends Component {
     constructor(props) {
