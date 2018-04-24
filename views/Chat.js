@@ -20,6 +20,7 @@ class Chat extends Component {
     constructor(props) {
         super(props);
         this.account = props.account;
+        this.contractManager = props.contractManager;
         this.state = {address: "", messages: [], publicKey: ""}
     }
 
@@ -53,7 +54,7 @@ class Chat extends Component {
     }
 
     sendMessage = (message) => {
-        this.account.sendMessage(this.state.address, message);
+        this.contractManager.sendMessage(this.state.address, this.account.getPublicKey(), message);
     }
 
     render() {

@@ -18,7 +18,7 @@ class AddContactModal extends Component {
     constructor(props) {
         super(props);
         this.state = { modalOpen: false, errorMessage: "", address: ""}
-        this.account = props.account;
+        this.contractManager = props.contractManager;
     }
     
     componentWillMount() {
@@ -37,7 +37,7 @@ class AddContactModal extends Component {
 
     handleAddContact = (e) => {
         if (web3.utils.isAddress(this.state.address)) {
-            this.account.addContact(this.state.address);
+            this.contractManager.addContact(this.state.address);
             this.setState({errorMessage: "", modalOpen: false});
         } else {
             this.setState({errorMessage: "Invalid ethereum address"});

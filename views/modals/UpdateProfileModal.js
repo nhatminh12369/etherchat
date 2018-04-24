@@ -16,6 +16,7 @@ class UpdateProfileModal extends Component {
     constructor(props) {
         super(props);
         this.account = props.account;
+        this.contractManager = props.contractManager;
         this.state = {modalOpen: false, name: this.account.name, avatarUrl: this.account.avatarUrl};
     }
 
@@ -26,7 +27,7 @@ class UpdateProfileModal extends Component {
 
     updateProfileClicked = (e) => {
         e.preventDefault();
-        this.account.updateProfile(this.state.name, this.state.avatarUrl, (resultEvent) => {
+        this.contractManager.updateProfile(this.state.name, this.state.avatarUrl, (resultEvent) => {
             if (resultEvent == Constant.EVENT.ON_RECEIPT) {
                 window.location.reload();
             }

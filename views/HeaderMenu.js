@@ -23,6 +23,8 @@ class HeaderMenu extends Component {
     constructor(props) {
         super(props);
         this.account = props.account;
+        this.contractManager = props.contractManager;
+        this.transactionDispatcher = props.transactionDispatcher;
         this.state = {address: "", balance: "", name: "", 
             avatarUrl: "", isLoading: true, isJoinButtonLoading: false, 
             isJoined: false, numPendingTx: 0};
@@ -43,7 +45,7 @@ class HeaderMenu extends Component {
                     this.setState({name: this.account.name, avatarUrl: this.account.avatarUrl, isJoined: this.account.isJoined});
                 } 
             });
-            this.account.transactionManager.dispatcher.register((payload) => {
+            this.transactionDispatcher.register((payload) => {
                 if (payload.action == Constant.EVENT.PENDING_TRANSACTION_UPDATED) {
                     this.setState({numPendingTx: this.account.transactionManager.numPendingTx});
                 }
@@ -92,7 +94,8 @@ class HeaderMenu extends Component {
     }
 
     handleJoinClicked = () => {
-        this.account.joinContract((resultEvent) => {
+        var publicKeyBuffer = this.account.getPublicKeyBuffer();
+        this.contractManager.joinContract(publicKeyBuffer, (resultEvent) => {
             if (resultEvent == Constant.EVENT.ON_REJECTED || resultEvent == Constant.EVENT.ON_ERROR) {
                 this.setState({isJoinButtonLoading: false});
             } else if (resultEvent == Constant.EVENT.ON_RECEIPT) {

@@ -18,7 +18,7 @@ import web3 from '../../ethereum/web3';
 class TransactionModal extends Component {
     constructor(props) {
         super(props);
-        this.account = props.account;
+        this.dispatcher = props.dispatcher;
         this.state = { modalOpen: false, estimatedGas: 0, gasPrice: 0, transactionId: 0, warningMessage: ""};
     }
 
@@ -26,7 +26,7 @@ class TransactionModal extends Component {
         e.preventDefault();
         this.setState({ modalOpen: false})
 
-        this.account.transactionManager.dispatcher.dispatch({
+        this.dispatcher.dispatch({
             action: Constant.ACTION.REJECT_TRANSACTION,
             transactionId: this.state.transactionId
         })
@@ -36,7 +36,7 @@ class TransactionModal extends Component {
         e.preventDefault();
         this.setState({ modalOpen: false})
 
-        this.account.transactionManager.dispatcher.dispatch({
+        this.dispatcher.dispatch({
             action: Constant.ACTION.APPROVE_TRANSACTION,
             transactionId: this.state.transactionId,
             method: this.method,
@@ -46,7 +46,7 @@ class TransactionModal extends Component {
     }
 
     componentDidMount = () => {
-        this.account.transactionManager.dispatcher.register((payload) => {
+        this.dispatcher.register((payload) => {
             if (payload.action == Constant.ACTION.OPEN_TRANSACTION_MODAL) {
                 this.method = payload.method;
                 this.setState({modalOpen: true, estimatedGas: 0, gasPrice: 0, transactionId: payload.transactionId});
@@ -60,8 +60,8 @@ class TransactionModal extends Component {
         var warningMessage = "";
         try {
             estimatedGas = await this.method.estimateGas({
-                gas: 3000000,
-                from: this.account.getAddress()
+                gas: 3000000
+                // from: this.account.getAddress()
             });
         } catch(err) {
             estimatedGas = 3000000;

@@ -30,7 +30,7 @@ class EnterPrivateKeyModal extends Component {
         e.preventDefault();
         this.setState({errorMessage: ""});
 
-        var success = this.account.setPrivateKey(this.state.key);
+        var success = this.account.storePrivateKey(this.state.key);
         if (success) {
             this.setState({ modalOpen: false });
             window.location.reload();

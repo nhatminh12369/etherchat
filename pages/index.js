@@ -20,7 +20,7 @@ import PrivateKeyModal from '../views/modals/EnterPrivateKeyModal';
 import UpdateProfileModal from '../views/modals/UpdateProfileModal';
 import GuideModal from '../views/modals/GuideModal';
 import Head from 'next/head';
-import AccountManager from '../core/AccountManager';
+import AppManager from '../core/AppManager';
 import ContactList from '../views/ContactList';
 import Chat from '../views/Chat';
 import ErrorModal from '../views/modals/ErrorModal';
@@ -33,13 +33,16 @@ class Index extends Component {
         super(props);
         this.state = { width: 0, height: 0, contactList: [], messages: [], selectedContact: "" };
         this.updateWindowDimensions = this.updateWindowDimensions.bind(this);
-        this.account = new AccountManager();
+        this.app = new AppManager();
     }
 
     componentDidMount() {
         this.updateWindowDimensions();
         window.addEventListener('resize', this.updateWindowDimensions);
-        this.account.loadPrivateKey();
+    }
+
+    componentWillMount() {
+        this.app.initialize();
     }
       
     componentWillUnmount() {
@@ -50,12 +53,10 @@ class Index extends Component {
         this.setState({ width: window.innerWidth, height: window.innerHeight });
     }
 
-    joinIntoContract = () => {
-        this.account.joinContract();
-    }
-
     render() {
-        var account = this.account;
+        var account = this.app.account;
+        var contractManager = this.app.contractManager;
+        var transactionDispatcher = this.app.getTransactionDispatcher();
 
         var listHeight = this.state.height - 140;
         return (
@@ -64,17 +65,17 @@ class Index extends Component {
                     <title>EtherChat - Decentralized messaging on Ethereum network</title>
                 </Head>
 
-                <UpdateProfileModal account={account} />
+                <UpdateProfileModal account={account} contractManager={contractManager} />
                 <PrivateKeyModal account={account} />
-                <HeaderMenu account={account} />
+                <HeaderMenu account={account} transactionDispatcher={transactionDispatcher}/>
                 <GuideModal />
                 <ErrorModal />
                 <SettingsModal account={account} />
-                <TransactionModal account={account} />
+                <TransactionModal dispatcher={transactionDispatcher} />
             <Grid column={2} style={{paddingTop: 100}}>
                 <Grid.Row stretched>
                     <Grid.Column width={6} style={{height: listHeight + "px", float: 'left'}}>
-                        <ContactList height={listHeight} account={account}/>
+                        <ContactList height={listHeight} account={account} contractManager={contractManager}/>
                     </Grid.Column>
                     <Grid.Column width={10} style={{height: listHeight + "px", overflow: 'auto', float: 'left'}}>
                         <Chat height={listHeight} account={account}/>

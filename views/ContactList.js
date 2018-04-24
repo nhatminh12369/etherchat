@@ -21,6 +21,7 @@ class ContactList extends Component {
     constructor(props) {
         super(props);
         this.account = props.account;
+        this.contractManager = props.contractManager;
         this.state = {contactAddresses: [], isAccepting: [], selectedAddress: ""};
     }
 
@@ -54,7 +55,7 @@ class ContactList extends Component {
             this.account.storageManager.contacts[address].isAccepting = true;
             this.forceUpdate();
 
-            this.account.acceptContactRequest(address, (resultEvent) => {
+            this.contractManager.acceptContactRequest(address, (resultEvent) => {
                 if (resultEvent == Constant.EVENT.ON_REJECTED) {
                     this.account.storageManager.contacts[address].isAccepting = false;
                     this.forceUpdate();
@@ -171,7 +172,7 @@ class ContactList extends Component {
                 <div style={{height: height - 40, overflow: 'auto', float: 'left', width:'100%'}}>
                     {htmlContent}
                 </div>
-                <AddContactModal account={this.account} />
+                <AddContactModal contractManager={this.contractManager} />
             </div>
         );
     }

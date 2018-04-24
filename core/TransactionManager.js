@@ -9,8 +9,8 @@ import web3 from '../ethereum/web3';
 import Tx from 'ethereumjs-tx';
 
 class TransactionsManager {
-    constructor(accountManager) {
-        this.accountManager = accountManager;
+    constructor(localStorage) {
+        this.localStorage = localStorage;
         this.numPendingTx = 0;
         this.emitterMapping = {};
         this.emitterIncrementalId = 0;
@@ -29,7 +29,7 @@ class TransactionsManager {
         var emitter = this.emitterMapping[transactionId];
 
         var data = method.encodeABI();
-        var transactionCount = await web3.eth.getTransactionCount(this.accountManager.getAddress());
+        var transactionCount = await web3.eth.getTransactionCount(this.localStorage.getAddress());
 
         var rawTx = {
             nonce: parseInt(transactionCount + this.numPendingTx),
@@ -40,7 +40,7 @@ class TransactionsManager {
             data: data
         }
         var tx = new Tx(rawTx);
-        tx.sign(this.accountManager.walletAccount.getPrivateKey());
+        tx.sign(Buffer.from(this.localStorage.getPrivateKey(), 'hex'));
         var serializedTx = tx.serialize();
         var txHash =  '0x' + tx.hash().toString('hex');
 
@@ -75,7 +75,7 @@ class TransactionsManager {
         var emitter = new EventEmitter();
         this.emitterMapping[this.emitterIncrementalId] = emitter;
 
-        if (this.accountManager.storageManager.getAskForTransactionApproval()) {
+        if (this.localStorage.getAskForTransactionApproval()) {
             this.dispatcher.dispatch({
                 action: Constant.ACTION.OPEN_TRANSACTION_MODAL,
                 method: method,

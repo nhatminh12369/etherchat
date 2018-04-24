@@ -6,7 +6,6 @@ import Constant from '../support/Constant';
 import utils from '../support/Utils';
 
 class LocalStorageManager {
-
     initialize() {
         this.contacts = {};
         this.loadLocalContactAddresses();
@@ -148,15 +147,24 @@ class LocalStorageManager {
         }
     }
 
-    setPrivateKey(privateKey) {
-        window.localStorage.setItem("privateKey", privateKey);
-        window.localStorage.setItem("currentDataBlock", "0");
-        window.localStorage.setItem("ethNetwork", "4");
+    storePrivateKeyAndAddress(privateKey, address) {
+        if (typeof(Storage) !== 'undefined') {
+            window.localStorage.setItem("privateKey", privateKey);
+            window.localStorage.setItem("address", address);
+            window.localStorage.setItem("currentDataBlock", "0");
+            window.localStorage.setItem("ethNetwork", "4");
+        }
     }
 
     getPrivateKey() {
         if (typeof(Storage) !== 'undefined') {
             return window.localStorage.privateKey;
+        }
+    }
+
+    getAddress() {
+        if (typeof(Storage) !== 'undefined') {
+            return window.localStorage.address;
         }
     }
 
