@@ -40,7 +40,7 @@ class UpdateProfileModal extends Component {
             if (payload.action == Constant.ACTION.OPEN_UPDATE_PROFILE) {
                 this.setState({modalOpen: true});
             } else if (payload.action == Constant.EVENT.ACCOUNT_INFO_UPDATED) {
-                this.setState({name: this.account.name, avatarUrl: this.account.avatarUrl});
+                this.setState({name: payload.profile.name, avatarUrl: payload.profile.avatarUrl});
             }
         })
     }

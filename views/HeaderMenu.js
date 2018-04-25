@@ -42,12 +42,12 @@ class HeaderMenu extends Component {
                 if (payload.action == Constant.EVENT.ACCOUNT_BALANCE_UPDATED) {
                     this.setState({balance: this.account.balance});
                 } else if (payload.action == Constant.EVENT.ACCOUNT_INFO_UPDATED) {
-                    this.setState({name: this.account.name, avatarUrl: this.account.avatarUrl, isJoined: this.account.isJoined});
+                    this.setState({name: payload.profile.name, avatarUrl: payload.profile.avatarUrl, isJoined: payload.profile.isJoined});
                 } 
             });
             this.transactionDispatcher.register((payload) => {
                 if (payload.action == Constant.EVENT.PENDING_TRANSACTION_UPDATED) {
-                    this.setState({numPendingTx: this.account.transactionManager.numPendingTx});
+                    this.setState({numPendingTx: payload.numPendingTx});
                 }
             });
         }

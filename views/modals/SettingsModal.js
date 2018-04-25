@@ -25,14 +25,14 @@ class SettingsModal extends Component {
     };
 
     handleUpdate = () => {
-        this.account.storageManager.setAskForTransactionApproval(this.state.askForApproval);
+        this.account.setAskForTransactionApproval(this.state.askForApproval);
         this.setState({ modalOpen: false})
     }
 
     componentDidMount() {
         appDispatcher.register((payload) => {
             if (payload.action == Constant.ACTION.OPEN_SETTINGS_MODAL) {
-                var askForApproval = this.account.storageManager.getAskForTransactionApproval();
+                var askForApproval = this.account.askForTransactionApproval;
                 this.setState({modalOpen: true, askForApproval});
             }
         });

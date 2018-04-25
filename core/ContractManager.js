@@ -3,41 +3,64 @@ import compiledContract from '../ethereum/build/EtherChat.json';
 import TransactionsManager from './TransactionManager';
 import appDispatcher from './AppDispatcher';
 import Config from '../support/Config';
+import Constant from '../support/Constant';
+import utils from '../support/Utils';
+import crypto from 'crypto';
 
 /**
  * Responsible for interacting with the Ethereum smart contract
  */
 
 class ContractManager {
-    constructor(localStorage) {
+    constructor(accountManager, storageManager) {
         this.getContract();
-        this.transactionManager = new TransactionsManager(localStorage);
+        this.accountManager = accountManager;
+        this.storageManager = storageManager;
+        this.transactionManager = new TransactionsManager(accountManager);
     }
+
     // Create a web3 contract object that represent the ethereum smart contract
     getContract = async () => {
         this.contract = await new web3.eth.Contract(JSON.parse(compiledContract.interface), 
                 Config.ENV.ContractAddress);
+        appDispatcher.dispatch({
+            action: Constant.EVENT.CONTRACT_READY
+        })
     }
 
-    // getProfile = async (address) => {
-    //     return await this.contract.methods.members(address).call();
-    // }
-
     // Get current account profile from EtherChat contract's storage
-    getProfile = async () => {
-        var result = await this.contract.methods.members(this.getAddress()).call();
+    getProfile = async (address) => {
+        var result = await this.contract.methods.members(this.accountManager.getAddress()).call();
+        var profile = {};
         if (result.isMember == 1) {
-            // this.isJoined = true;
-            // this.avatarUrl = utils.hexStringToAsciiString(result.avatarUrl);
-            // this.name = utils.hexStringToAsciiString(result.name);
+            profile.isJoined = true;
+            profile.avatarUrl = utils.hexStringToAsciiString(result.avatarUrl);
+            profile.name = utils.hexStringToAsciiString(result.name);
+
             this.storageManager.setJoinedStatus(true);
             this.storageManager.setName(this.name);
             this.storageManager.setAvatarUrl(this.avatarUrl);
             
             appDispatcher.dispatch({
-                action: Constant.EVENT.ACCOUNT_INFO_UPDATED
+                action: Constant.EVENT.ACCOUNT_INFO_UPDATED,
+                profile: profile
             })
         }
+        return profile;
+    }
+
+    getMemberInfo = async (address, relationship) => {
+        var memberInfo = await this.contract.methods.members(address).call();
+        if (memberInfo.isMember) {
+            var publicKey = '04' + memberInfo.publicKeyLeft.substr(2) + memberInfo.publicKeyRight.substr(2);
+            var name = utils.hexStringToAsciiString(memberInfo.name);
+            var avatarUrl = utils.hexStringToAsciiString(memberInfo.avatarUrl);
+            this.storageManager.updateContact(address, publicKey, name, avatarUrl, relationship);
+        }
+    }
+
+    getPastEvents = async (eventName, filters) => {
+        return await this.contract.getPastEvents(eventName, filters);
     }
 
     joinContract = async(publicKeyBuffer, callback) => {
@@ -65,6 +88,8 @@ class ContractManager {
     }
 
     addContact = async (address, callback) => {
+        console.log(address);
+
         var method = this.contract.methods.addContact(address);
         this.transactionManager.executeMethod(method)
             .on(Constant.EVENT.ON_APPROVED, (txHash) => {
@@ -123,8 +148,10 @@ class ContractManager {
             });
     }
 
-    sendMessage = async (toAddress, publicKeyBuffer, message) => {
-        var encryptedRaw = utils.encrypt(message, this.computeSecret(publicKeyBuffer));
+    // A message will be encrypted locally before sending to the smart contract
+    sendMessage = async (toAddress, publicKey, message) => {
+        var publicKeyBuffer = Buffer.from(publicKey, 'hex');
+        var encryptedRaw = utils.encrypt(message, this.accountManager.computeSecret(publicKeyBuffer));
         var encryptedMessage = '0x' + encryptedRaw.toString('hex');
         var method = this.contract.methods.sendMessage(toAddress, encryptedMessage, utils.getEncryptAlgorithmInHex());
 

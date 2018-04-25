@@ -78,7 +78,7 @@ class Index extends Component {
                         <ContactList height={listHeight} account={account} contractManager={contractManager}/>
                     </Grid.Column>
                     <Grid.Column width={10} style={{height: listHeight + "px", overflow: 'auto', float: 'left'}}>
-                        <Chat height={listHeight} account={account}/>
+                        <Chat height={listHeight} account={account} contractManager={contractManager}/>
                     </Grid.Column>
                 </Grid.Row>
             </Grid>

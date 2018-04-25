@@ -10,21 +10,24 @@ import utils from '../support/Utils';
 //    to get events initiated by the contract.
 
 class EventHandler {
-    constructor(myAddress, contract, storageManager) {
+    constructor(myAddress, contractManager, storageManager) {
         this.myAddress = myAddress;
-        this.contract = contract;
+        this.contractManager = contractManager;
         this.storageManager = storageManager;
     }
 
     pullContactEvents = async (blockNumber, currentDataBlock) => {
-        var myRequestEvents = await this.contract.getPastEvents('addContactEvent', {
+
+        // Get list of invitation requests that the current user sent
+        var myRequestEvents = await this.contractManager.getPastEvents('addContactEvent', {
             filter: {from: this.myAddress},
             fromBlock: currentDataBlock+1,
             toBlock: blockNumber
         });
         this.storageManager.addRequestEvents(myRequestEvents);
 
-        var invitationEvents = await this.contract.getPastEvents('addContactEvent', {
+        // Get list of invitation requests from other users send to the current user
+        var invitationEvents = await this.contractManager.getPastEvents('addContactEvent', {
             filter: {to: this.myAddress},
             fromBlock: currentDataBlock+1,
             toBlock: blockNumber
@@ -32,20 +35,20 @@ class EventHandler {
         this.storageManager.addInvitationEvents(invitationEvents);
 
         for (var i=0;i<myRequestEvents.length;i++) {
-            await this.getMemberInfo(myRequestEvents[i].returnValues.to, Constant.Relationship.Requested);
+            await this.contractManager.getMemberInfo(myRequestEvents[i].returnValues.to, Constant.Relationship.Requested);
         }
         for (var i=0;i<invitationEvents.length;i++) {
-            await this.getMemberInfo(invitationEvents[i].returnValues.from, Constant.Relationship.NoRelation);
+            await this.contractManager.getMemberInfo(invitationEvents[i].returnValues.from, Constant.Relationship.NoRelation);
         }
 
-        var myAcceptContactEvents = await this.contract.getPastEvents('acceptContactEvent', {
+        var myAcceptContactEvents = await this.contractManager.getPastEvents('acceptContactEvent', {
             filter: {from: this.myAddress},
             fromBlock: currentDataBlock+1,
             toBlock: blockNumber
         });
         this.storageManager.addMyAcceptContactEvents(myAcceptContactEvents);
 
-        var acceptContactEvents = await this.contract.getPastEvents('acceptContactEvent', {
+        var acceptContactEvents = await this.contractManager.getPastEvents('acceptContactEvent', {
             filter: {to: this.myAddress},
             fromBlock: currentDataBlock+1,
             toBlock: blockNumber
@@ -53,15 +56,16 @@ class EventHandler {
         this.storageManager.addAcceptContactEvents(acceptContactEvents);
 
         // If the one who accept our contact doesn't have publicKey yet 
-        // we need to get it from the contract
+        // we need to get it from the smart contract
         for (var i=0;i<acceptContactEvents.length;i++) {
             var fromAddress = acceptContactEvents[i].returnValues.from;
             if (!this.storageManager.contacts[fromAddress].publicKey) {
-                await this.getMemberInfo(fromAddress, Constant.Relationship.Connected);
+                await this.contractManager.getMemberInfo(fromAddress, Constant.Relationship.Connected);
             }
         }
 
-        var profileUpdateEvents = await this.contract.getPastEvents('profileUpdateEvent', {
+        // Get profile update event to check if anyone in the current user contact list has updated their profile
+        var profileUpdateEvents = await this.contractManager.getPastEvents('profileUpdateEvent', {
             filter: {from: this.storageManager.contactAddresses},
             fromBlock: currentDataBlock + 1,
             toBlock: blockNumber
@@ -85,12 +89,12 @@ class EventHandler {
     }
 
     pullMessageEvents = async (blockNumber, currentDataBlock) => {
-        var messagesSent = await this.contract.getPastEvents('messageSentEvent', {
+        var messagesSent = await this.contractManager.getPastEvents('messageSentEvent', {
             filter: {from: this.myAddress},
             fromBlock: currentDataBlock + 1,
             toBlock: blockNumber
         });
-        var messagesReceived = await this.contract.getPastEvents('messageSentEvent', {
+        var messagesReceived = await this.contractManager.getPastEvents('messageSentEvent', {
             filter: {to: this.myAddress},
             fromBlock: currentDataBlock + 1,
             toBlock: blockNumber
@@ -125,13 +129,15 @@ class EventHandler {
 
     pullEvents = async () => {
         try {
-            var currentDataBlock = parseInt(window.localStorage.currentDataBlock);
+            // Get the last updated block number
+            var currentDataBlock = this.storageManager.getCurrentDataBlock();
+
             var blockNumber = await web3.eth.getBlockNumber();
 
             if (blockNumber > currentDataBlock) {
                 await this.pullContactEvents(blockNumber, currentDataBlock);
                 await this.pullMessageEvents(blockNumber, currentDataBlock);
-                window.localStorage.setItem('currentDataBlock', blockNumber);
+                this.storageManager.setCurrentDataBlock(blockNumber);
             
             }
         } catch (err) {
@@ -143,16 +149,6 @@ class EventHandler {
 
     start = () => {
         this.pullEvents();
-    }
-
-    getMemberInfo = async (address, relationship) => {
-        var memberInfo = await this.contract.methods.members(address).call();
-        if (memberInfo.isMember) {
-            var publicKey = '04' + memberInfo.publicKeyLeft.substr(2) + memberInfo.publicKeyRight.substr(2);
-            var name = utils.hexStringToAsciiString(memberInfo.name);
-            var avatarUrl = utils.hexStringToAsciiString(memberInfo.avatarUrl);
-            this.storageManager.updateContact(address, publicKey, name, avatarUrl, relationship);
-        }
     }
 }
 

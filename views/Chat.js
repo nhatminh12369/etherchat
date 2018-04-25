@@ -54,7 +54,9 @@ class Chat extends Component {
     }
 
     sendMessage = (message) => {
-        this.contractManager.sendMessage(this.state.address, this.account.getPublicKey(), message);
+        this.contractManager.sendMessage(this.state.address, 
+            this.account.storageManager.contacts[this.state.address].publicKey, 
+            message);
     }
 
     render() {

@@ -7,7 +7,7 @@ import utils from '../support/Utils';
 
 class LocalStorageManager {
     initialize() {
-        this.contacts = {};
+        this.contacts = {}; // Map Ethereum addresses with all messages and information belong to an address
         this.loadLocalContactAddresses();
         this.loadContactMessages();
         appDispatcher.dispatch({
@@ -16,7 +16,7 @@ class LocalStorageManager {
     }
 
     loadLocalContactAddresses = () => {
-        this.contactAddresses = [];
+        this.contactAddresses = []; // A list of Ethereum addresses in the contact list of the current user.
         if (typeof(Storage) != 'undefined') {
             var rawContactAddresses = window.localStorage.contactAddresses;
             if (rawContactAddresses != undefined) {
@@ -222,6 +222,15 @@ class LocalStorageManager {
         } else {
             return false;
         }
+    }
+
+    // Get current block number of contract events' data (message events, invitation events...)
+    getCurrentDataBlock() {
+        return parseInt(window.localStorage.currentDataBlock);
+    }
+
+    setCurrentDataBlock(blockNumber) {
+        window.localStorage.setItem('currentDataBlock', blockNumber);
     }
 
     setAskForTransactionApproval(boolValue) {

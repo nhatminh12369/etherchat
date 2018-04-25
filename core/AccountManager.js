@@ -8,7 +8,6 @@ import crypto from 'crypto';
 import web3 from '../ethereum/web3';
 import utils from '../support/Utils';
 import EventHandler from './EventHandler';
-// import storageManagerManager from './storageManagerManager';
 import appDispatcher from '../core/AppDispatcher';
 import TransactionManager from './TransactionManager';
 import Constant from '../support/Constant';
@@ -30,6 +29,13 @@ class AccountManager {
         this.name = this.storageManager.getName();
         this.avatarUrl = this.storageManager.getAvatarUrl();
         this.isJoined = this.storageManager.getJoinedStatus();
+        this.askForTransactionApproval = this.storageManager.getAskForTransactionApproval();
+    }
+
+    setProfile = (name, avatarUrl, isJoined) => {
+        this.name = name;
+        this.avatarUrl = avatarUrl;
+        this.isJoined = isJoined;
     }
 
     // Update balance of the current account
@@ -39,6 +45,11 @@ class AccountManager {
         appDispatcher.dispatch({
             action: Constant.EVENT.ACCOUNT_BALANCE_UPDATED
         })
+    }
+
+    setAskForTransactionApproval = (askForApproval) => {
+        this.storageManager.setAskForTransactionApproval(askForApproval);
+        this.askForTransactionApproval = askForApproval;
     }
 
     // Load private key from browser's local storage
@@ -68,6 +79,10 @@ class AccountManager {
         return this.walletAccount.getPublicKey();
     }
 
+    getPrivateKeyBuffer() {
+        return this.walletAccount.getPrivateKey();
+    }
+
     getAddress = () => {
         if (this.walletAccount) {
             return '0x' + this.walletAccount.getAddress().toString('hex');
@@ -77,11 +92,11 @@ class AccountManager {
     }
 
     // Compute a secret key for messages encryption/decryption
-    computeSecret = (publicKey) => {
+    computeSecret = (publicKeyBuffer) => {
         var a = crypto.createECDH('secp256k1');
         a.generateKeys();
-        a.setPrivateKey(this.walletAccount.getPrivateKey());
-        return a.computeSecret(publicKey);
+        a.setPrivateKey(this.getPrivateKeyBuffer());
+        return a.computeSecret(publicKeyBuffer);
     }
 }
 
