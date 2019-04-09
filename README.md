@@ -6,6 +6,16 @@ EtherChat only depends on the Ethereum network and can work without any centrali
 # Article on Medium
 https://medium.com/@leonardnguyen/etherchat-decentralized-messaging-application-on-ethereum-network-part-1-253e5078770b
 
+# How to run
+You need to compile the smart contract first by executing:
+"node ./ethereum/compile.js"
+
+Then, you can run the app with:
+"npm run dev"
+
+The web app will connect to the smart contract that I have already deployed. If you want to have your own smart contract on the ethereum network, you need to deploy it by yourself. Command for deploying the contract:
+"node ./ethereum/deploy.js"
+
 # Official web app
 https://etherchat.co
 
