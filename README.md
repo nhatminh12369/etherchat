@@ -22,7 +22,7 @@ The web app will connect to the smart contract that I have already deployed. If 
 ```
 
 # Official web app
-https://etherchat.co
+Previously, it was hosted at https://etherchat.co. However, I'm no longer maintaining it now.
 
 # Authors
 
