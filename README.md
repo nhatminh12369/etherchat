@@ -17,7 +17,9 @@ Then, you can run the app with:
 "npm run dev"
 ```
 The web app will connect to the smart contract that I have already deployed. If you want to have your own smart contract on the ethereum network, you need to deploy it by yourself. Command for deploying the contract:
+```
 "node ./ethereum/deploy.js"
+```
 
 # Official web app
 https://etherchat.co
